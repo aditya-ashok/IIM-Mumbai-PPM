@@ -325,7 +325,56 @@ function PolicyChoice({ policyIndex, choices, onUpdate, participant }) {
   );
 }
 
+// --- Jan Vishwas Bill Tab ---
+function JanVishwasBill() {
+  const sections = [
+    { title: "Overview", content: "The Jan Vishwas (Amendment of Provisions) Bill, 2026 was introduced in Lok Sabha on March 27, 2026. It seeks to amend 80 central Acts to decriminalise or rationalise offences and penalties. It replaces the 2025 Bill (which covered 17 Acts), incorporating recommendations from the Select Committee (Chair: Mr. Tejasvi Surya) which suggested amendments to 65 additional Acts." },
+    { title: "Decriminalising Offences", content: "The Bill decriminalises several offences, imposing civil penalties instead of criminal punishment. For example, under the Drugs and Cosmetics Act, 1940, manufacturing/sale of cosmetics in contravention is changed from imprisonment (up to 1 year) + fine (up to Rs 20,000) to a civil penalty of Rs 1 lakh or 3x value of confiscated cosmetics. Under the National Highways Act, 1956, making a highway impassable changes from imprisonment (up to 5 years) to civil penalty of Rs 10 lakh to Rs 1 crore." },
+    { title: "Removal of Imprisonment Terms", content: "In some cases, the Bill removes imprisonment while retaining and increasing fines. Examples: Indian Succession Act, 1925 — failure to surrender revoked probate (was: 3 months imprisonment + fine, now: fine only, increased). Electricity Act, 2003 — non-compliance with orders (was: 3 months imprisonment + fine, now: fine only, increased)." },
+    { title: "Omission of Offences", content: "The Bill removes several offences entirely, including: (i) giving false alarm of fire under the Delhi Police Act, 1978, (ii) failure to give information of births and deaths under the Delhi Municipal Corporation Act, 1957, and (iii) making false entries in the register of copyrights under the Copyright Act, 1957." },
+    { title: "Revision of Fines & Penalties", content: "The Bill revises monetary values of fines and penalties for several offences. It provides that fines and penalties will auto-increase by 10% of the respective minimum amount every three years." },
+    { title: "Warnings on First & Second Offences", content: "Some Acts are amended to provide advisories or warnings for first/second instances. Example: Under the Apprentices Act, 1961 — first contravention gets an advisory, second gets a warning, civil penalty only for subsequent contraventions." },
+    { title: "Improvement Notices", content: "Under the Legal Metrology Act, 2009, the Bill introduces improvement notices for first offences (e.g., manufacturing/using non-standard weights). These require rectifying non-compliance within a specified time. Civil penalty for second offence, criminal fine for subsequent offences." },
+    { title: "Adjudication of Penalties", content: "The Bill provides for appointment of adjudicating officers to hold inquiries and adjudicate penalties, and appellate authorities to hear appeals against their decisions." },
+    { title: "Property & Advertisement Tax (New Delhi)", content: "Amends the New Delhi Municipal Council Act, 1994. Property tax will consist of building tax + vacant land tax. Establishes a Municipal Valuation Committee for base values and a Hardship and Anomaly Committee for grievances. Removes provisions for levying advertisement tax." },
+    { title: "Revision under Jan Vishwas Act 2023", content: "The Jan Vishwas Act, 2023 provides for revision of fines every 3 years. This Bill adds that if any Act already prescribes its own revision method, that method will apply instead." },
+  ];
+
+  return (
+    <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
+      <div style={{ background: "#fff", borderRadius: 10, padding: "24px", border: "1px solid #e5e5e0", marginBottom: 20 }}>
+        <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: "#059669", background: "#ecfdf5", padding: "4px 10px", borderRadius: 4 }}>Regulatory</span>
+          <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: "#7c3aed", background: "#f5f3ff", padding: "4px 10px", borderRadius: 4 }}>Constituent</span>
+          <span style={{ fontSize: 10, color: "#b45309", fontWeight: 600 }}>Commerce & Industry</span>
+        </div>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: "#1a1a2e", margin: "0 0 8px" }}>The Jan Vishwas (Amendment of Provisions) Bill, 2026</h2>
+        <div style={{ fontSize: 13, color: "#666", lineHeight: 1.6 }}>
+          Ministry of Commerce and Industry | Introduced in Lok Sabha: March 27, 2026
+        </div>
+        <div style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
+          Source: PRS Legislative Research
+        </div>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {sections.map((s, i) => (
+          <div key={i} style={{ background: "#fff", borderRadius: 10, padding: "16px 20px", border: "1px solid #e5e5e0", borderLeft: "4px solid #0f3460" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 8 }}>{s.title}</div>
+            <div style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>{s.content}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ marginTop: 24, padding: "16px 20px", background: "#f0f0ec", borderRadius: 10, fontSize: 12, color: "#777", lineHeight: 1.7 }}>
+        <strong>Lowi Classification:</strong> This Bill is primarily <strong>Regulatory</strong> (rationalising penalties and decriminalising offences across 80 Acts) with <strong>Constituent</strong> elements (restructuring adjudication mechanisms, creating new institutional bodies like the Municipal Valuation Committee).
+      </div>
+    </div>
+  );
+}
+
 export default function LowiClassification() {
+  const [activeTab, setActiveTab] = useState("classify");
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeSector, setActiveSector] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -404,7 +453,31 @@ export default function LowiClassification() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
+      {/* Tabs */}
+      <div style={{ background: "#fff", borderBottom: "1px solid #e5e5e0" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", gap: 0 }}>
+          {[
+            { key: "classify", label: "Policy Classification" },
+            { key: "janvishwas", label: "Jan Vishwas Bill 2026" },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              style={{
+                padding: "12px 24px", border: "none", borderBottom: activeTab === tab.key ? "3px solid #0f3460" : "3px solid transparent",
+                background: "none", cursor: "pointer", fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 400,
+                color: activeTab === tab.key ? "#0f3460" : "#888", fontFamily: "inherit", transition: "all 0.15s",
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {activeTab === "janvishwas" && <JanVishwasBill />}
+
+      {activeTab === "classify" && <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
         {/* Participant Name */}
         <div style={{ background: "#fff", borderRadius: 10, padding: "14px 20px", marginBottom: 20, border: "1px solid #e5e5e0", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           <span style={{ fontSize: 13, fontWeight: 700, color: "#555" }}>Participant:</span>
@@ -633,7 +706,7 @@ export default function LowiClassification() {
           <br /><br />
           <strong>Source:</strong> PRS Legislative Research — Annual Policy Review, April 2024 – March 2025
         </div>
-      </div>
+      </div>}
     </div>
   );
 }
