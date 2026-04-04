@@ -152,6 +152,8 @@ const sectorColors = {
 
 // --- localStorage persistence helpers ---
 const STORAGE_KEY = "lowi_policy_responses";
+const USER_KEY = "lowi_participant";
+const CHOICES_KEY = "lowi_participant_choices";
 
 function loadResponses() {
   try {
@@ -162,6 +164,25 @@ function loadResponses() {
 
 function saveResponses(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function loadParticipant() {
+  try { return localStorage.getItem(USER_KEY) || ""; } catch { return ""; }
+}
+
+function saveParticipant(name) {
+  localStorage.setItem(USER_KEY, name);
+}
+
+function loadChoices() {
+  try {
+    const raw = localStorage.getItem(CHOICES_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
+function saveChoices(data) {
+  localStorage.setItem(CHOICES_KEY, JSON.stringify(data));
 }
 
 // --- Feedback panel for each policy ---
@@ -254,12 +275,67 @@ function PolicyFeedback({ policyIndex, responses, onUpdate }) {
   );
 }
 
+// --- Participant classification choice per policy ---
+function PolicyChoice({ policyIndex, correctCat, choices, onUpdate, participant }) {
+  const key = `policy_${policyIndex}`;
+  const current = choices[key] || null;
+  const isCorrect = current === correctCat;
+
+  if (!participant) return null;
+
+  return (
+    <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px dashed #d0d0cc" }}>
+      <div style={{ fontSize: 11, color: "#999", fontWeight: 600, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
+        Your Classification ({participant}):
+      </div>
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+        {Object.entries(categories).map(([key2, cat]) => {
+          const isSelected = current === key2;
+          return (
+            <button
+              key={key2}
+              onClick={(e) => { e.stopPropagation(); onUpdate(key, isSelected ? null : key2); }}
+              style={{
+                padding: "5px 14px",
+                border: `2px solid ${isSelected ? cat.color : "#e0e0dc"}`,
+                borderRadius: 6,
+                background: isSelected ? cat.color : "#fff",
+                color: isSelected ? "#fff" : "#888",
+                cursor: "pointer",
+                fontSize: 11,
+                fontWeight: 700,
+                fontFamily: "inherit",
+                transition: "all 0.15s",
+              }}
+            >
+              {cat.icon} {cat.label}
+            </button>
+          );
+        })}
+      </div>
+      {current && (
+        <div style={{
+          marginTop: 8, fontSize: 12, fontWeight: 700,
+          color: isCorrect ? "#16a34a" : "#dc2626",
+          background: isCorrect ? "#f0fdf4" : "#fef2f2",
+          padding: "6px 12px", borderRadius: 6, display: "inline-block",
+        }}>
+          {isCorrect ? "Correct! Matches the given classification." : `Different from given classification (${categories[correctCat].label}).`}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function LowiClassification() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeSector, setActiveSector] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedPolicy, setExpandedPolicy] = useState(null);
   const [responses, setResponses] = useState(loadResponses);
+  const [participant, setParticipant] = useState(loadParticipant);
+  const [nameInput, setNameInput] = useState(loadParticipant);
+  const [choices, setChoices] = useState(loadChoices);
 
   const updateResponse = (key, value) => {
     setResponses((prev) => {
@@ -267,6 +343,19 @@ export default function LowiClassification() {
       saveResponses(next);
       return next;
     });
+  };
+
+  const updateChoice = (key, value) => {
+    setChoices((prev) => {
+      const next = { ...prev, [key]: value };
+      saveChoices(next);
+      return next;
+    });
+  };
+
+  const handleSetParticipant = () => {
+    const trimmed = nameInput.trim();
+    if (trimmed) { setParticipant(trimmed); saveParticipant(trimmed); }
   };
 
   const counts = {};
@@ -318,6 +407,39 @@ export default function LowiClassification() {
       </div>
 
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
+        {/* Participant Name */}
+        <div style={{ background: "#fff", borderRadius: 10, padding: "14px 20px", marginBottom: 20, border: "1px solid #e5e5e0", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "#555" }}>Participant:</span>
+          {!participant ? (
+            <>
+              <input
+                type="text" placeholder="Enter your name..." value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSetParticipant()}
+                style={{ flex: "1 1 200px", padding: "8px 12px", border: "1px solid #d5d5d0", borderRadius: 6, fontSize: 13, fontFamily: "inherit", outline: "none" }}
+              />
+              <button onClick={handleSetParticipant} style={{ padding: "8px 20px", background: "#1a1a2e", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: "inherit" }}>
+                Start
+              </button>
+            </>
+          ) : (
+            <>
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#1a1a2e" }}>{participant}</span>
+              <span style={{ fontSize: 12, color: "#999" }}>
+                — Classified: {Object.values(choices).filter(Boolean).length}/{total}
+              </span>
+              {Object.values(choices).filter(Boolean).length > 0 && (
+                <span style={{ fontSize: 12, color: "#16a34a", fontWeight: 600 }}>
+                  Correct: {Object.entries(choices).filter(([k, v]) => v && v === policies[parseInt(k.split("_")[1])]?.cat).length}
+                </span>
+              )}
+              <button onClick={() => { setParticipant(""); setNameInput(""); saveParticipant(""); }} style={{ marginLeft: "auto", padding: "4px 12px", background: "none", border: "1px solid #ddd", borderRadius: 4, cursor: "pointer", fontSize: 11, color: "#999", fontFamily: "inherit" }}>
+                Change
+              </button>
+            </>
+          )}
+        </div>
+
         {/* Category Cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 24 }}>
           {Object.entries(categories).map(([key, cat]) => {
@@ -464,6 +586,7 @@ export default function LowiClassification() {
                     }}>
                       {p.detail}
                     </div>
+                    <PolicyChoice policyIndex={globalIndex} correctCat={p.cat} choices={choices} onUpdate={updateChoice} participant={participant} />
                     <PolicyFeedback policyIndex={globalIndex} responses={responses} onUpdate={updateResponse} />
                   </div>
                 )}
