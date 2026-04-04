@@ -779,18 +779,13 @@ export default function LowiClassification() {
     <div style={{ fontFamily: "'Georgia', 'Times New Roman', serif", background: "#fafaf8", minHeight: "100vh", padding: 0 }}>
       {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)", color: "#fff", padding: "18px 24px 14px" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-          <div>
-            <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", opacity: 0.6, marginBottom: 4 }}>
-              IIM Mumbai PPM — Assignment & Learning
-            </div>
-            <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, lineHeight: 1.2 }}>
-              India's Annual Policy Review 2024-25
-            </h1>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", opacity: 0.6, marginBottom: 4 }}>
+            IIM Mumbai PPM — Assignment & Learning
           </div>
-          <div style={{ fontSize: 11, opacity: 0.7 }}>
-            Theodore Lowi's Framework · {total} policies
-          </div>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, lineHeight: 1.2 }}>
+            {activeTab === "publicpolicy" ? "Public Policy" : "Public Procurement"}
+          </h1>
         </div>
       </div>
 
