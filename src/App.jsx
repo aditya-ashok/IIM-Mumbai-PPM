@@ -725,7 +725,8 @@ function JanVishwasBill() {
 }
 
 export default function LowiClassification() {
-  const [activeTab, setActiveTab] = useState("classify");
+  const [activeTab, setActiveTab] = useState("publicpolicy");
+  const [subTab, setSubTab] = useState("classify");
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeSector, setActiveSector] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -808,9 +809,7 @@ export default function LowiClassification() {
       <div style={{ background: "#fff", borderBottom: "1px solid #e5e5e0" }}>
         <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", gap: 0 }}>
           {[
-            { key: "classify", label: "Public Policy" },
-            { key: "janvishwas", label: "Jan Vishwas Bill 2026" },
-            { key: "bmcvoter", label: "BMC Voter Survey" },
+            { key: "publicpolicy", label: "Public Policy" },
             { key: "procurement", label: "Public Procurement" },
           ].map((tab) => (
             <button
@@ -828,11 +827,36 @@ export default function LowiClassification() {
         </div>
       </div>
 
-      {activeTab === "janvishwas" && <JanVishwasBill />}
-      {activeTab === "bmcvoter" && <BMCVoterSurvey />}
       {activeTab === "procurement" && <PublicProcurement />}
 
-      {activeTab === "classify" && <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
+      {activeTab === "publicpolicy" && <div>
+        {/* Sub-nav for Public Policy sections */}
+        <div style={{ background: "#f8f8f5", borderBottom: "1px solid #e5e5e0" }}>
+          <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", gap: 0, overflowX: "auto" }}>
+            {[
+              { key: "classify", label: "Lowi Classification" },
+              { key: "janvishwas", label: "Jan Vishwas Bill" },
+              { key: "bmcvoter", label: "BMC Voter Survey" },
+            ].map((sub) => (
+              <button
+                key={sub.key}
+                onClick={() => setSubTab(sub.key)}
+                style={{
+                  padding: "10px 20px", border: "none", borderBottom: subTab === sub.key ? "2px solid #be185d" : "2px solid transparent",
+                  background: "none", cursor: "pointer", fontSize: 12, fontWeight: subTab === sub.key ? 700 : 400,
+                  color: subTab === sub.key ? "#be185d" : "#999", fontFamily: "inherit", transition: "all 0.15s", whiteSpace: "nowrap",
+                }}
+              >
+                {sub.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {subTab === "janvishwas" && <JanVishwasBill />}
+        {subTab === "bmcvoter" && <BMCVoterSurvey />}
+
+        {subTab === "classify" && <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
         {/* Participant Name */}
         <div style={{ background: "#fff", borderRadius: 10, padding: "14px 20px", marginBottom: 20, border: "1px solid #e5e5e0", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           <span style={{ fontSize: 13, fontWeight: 700, color: "#555" }}>Participant:</span>
@@ -1061,6 +1085,7 @@ export default function LowiClassification() {
           <br /><br />
           <strong>Source:</strong> PRS Legislative Research — Annual Policy Review, April 2024 – March 2025
         </div>
+      </div>}
       </div>}
     </div>
   );
