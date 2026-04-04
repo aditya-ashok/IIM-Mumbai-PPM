@@ -276,10 +276,9 @@ function PolicyFeedback({ policyIndex, responses, onUpdate }) {
 }
 
 // --- Participant classification choice per policy ---
-function PolicyChoice({ policyIndex, correctCat, choices, onUpdate, participant }) {
+function PolicyChoice({ policyIndex, choices, onUpdate, participant }) {
   const key = `policy_${policyIndex}`;
   const current = choices[key] || null;
-  const isCorrect = current === correctCat;
 
   if (!participant) return null;
 
@@ -313,16 +312,6 @@ function PolicyChoice({ policyIndex, correctCat, choices, onUpdate, participant 
           );
         })}
       </div>
-      {current && (
-        <div style={{
-          marginTop: 8, fontSize: 12, fontWeight: 700,
-          color: isCorrect ? "#16a34a" : "#dc2626",
-          background: isCorrect ? "#f0fdf4" : "#fef2f2",
-          padding: "6px 12px", borderRadius: 6, display: "inline-block",
-        }}>
-          {isCorrect ? "Correct! Matches the given classification." : `Different from given classification (${categories[correctCat].label}).`}
-        </div>
-      )}
     </div>
   );
 }
@@ -428,11 +417,6 @@ export default function LowiClassification() {
               <span style={{ fontSize: 12, color: "#999" }}>
                 — Classified: {Object.values(choices).filter(Boolean).length}/{total}
               </span>
-              {Object.values(choices).filter(Boolean).length > 0 && (
-                <span style={{ fontSize: 12, color: "#16a34a", fontWeight: 600 }}>
-                  Correct: {Object.entries(choices).filter(([k, v]) => v && v === policies[parseInt(k.split("_")[1])]?.cat).length}
-                </span>
-              )}
               <button onClick={() => { setParticipant(""); setNameInput(""); saveParticipant(""); }} style={{ marginLeft: "auto", padding: "4px 12px", background: "none", border: "1px solid #ddd", borderRadius: 4, cursor: "pointer", fontSize: 11, color: "#999", fontFamily: "inherit" }}>
                 Change
               </button>
@@ -586,7 +570,7 @@ export default function LowiClassification() {
                     }}>
                       {p.detail}
                     </div>
-                    <PolicyChoice policyIndex={globalIndex} correctCat={p.cat} choices={choices} onUpdate={updateChoice} participant={participant} />
+                    <PolicyChoice policyIndex={globalIndex} choices={choices} onUpdate={updateChoice} participant={participant} />
                     <PolicyFeedback policyIndex={globalIndex} responses={responses} onUpdate={updateResponse} />
                   </div>
                 )}
