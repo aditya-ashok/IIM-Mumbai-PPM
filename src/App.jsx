@@ -37,6 +37,15 @@ const categories = {
       "Policies that create, reorganise, or restructure government institutions, administrative processes, or the rules of political participation itself.",
     icon: "🏛️",
   },
+  morality: {
+    label: "Morality",
+    color: "#be185d",
+    bg: "#fdf2f8",
+    border: "#f9a8d4",
+    description:
+      "Policies driven by moral or ethical values rather than economic cost-benefit — regulating personal conduct, social norms, or culturally sensitive issues.",
+    icon: "⚖️",
+  },
 };
 
 const policies = [
