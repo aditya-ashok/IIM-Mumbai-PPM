@@ -1,0 +1,38 @@
+{
+  "total_policies": 96,
+  "by_category": {
+    "Regulatory": 39,
+    "Distributive": 33,
+    "Constituent": 18,
+    "Redistributive": 6
+  },
+  "by_sector": {
+    "Finance": 24,
+    "Agriculture": 10,
+    "Commerce & Industry": 9,
+    "Education": 6,
+    "Law & Justice": 6,
+    "Electricity": 5,
+    "Shipping": 5,
+    "Home Affairs": 4,
+    "Health": 3,
+    "Mines": 3,
+    "Telecom & IT": 3,
+    "Civil Aviation": 3,
+    "Housing": 2,
+    "Environment": 2,
+    "Petroleum": 1,
+    "Rural Development": 1,
+    "Science & Tech": 1,
+    "Tribal Affairs": 1,
+    "Corporate Affairs": 1,
+    "Skill Development": 1,
+    "Road Transport": 1,
+    "Media": 1,
+    "Minority Affairs": 1,
+    "Railways": 1,
+    "Sports": 1
+  },
+  "source": "PRS Legislative Research — Annual Policy Review, April 2024 – March 2025",
+  "framework": "Theodore Lowi's Typology of Public Policy (1964, 1972)"
+}
