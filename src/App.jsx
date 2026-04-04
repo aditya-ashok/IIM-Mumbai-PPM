@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 const categories = {
   distributive: {
@@ -724,6 +724,1094 @@ function JanVishwasBill() {
   );
 }
 
+// ==================== ENERGY DASHBOARD (Comprehensive) ====================
+
+function EnergyDashboard() {
+  const [activeSection, setActiveSection] = useState("lpg");
+  const [hoveredBar, setHoveredBar] = useState(null);
+
+  // ===== DATA CONSTANTS =====
+
+  // India LPG Data (Source: PPAC / MoPNG Annual Reports, in MMT)
+  const lpgData = {
+    years: ["2018-19", "2019-20", "2020-21", "2021-22", "2022-23", "2023-24", "2024-25E"],
+    demand: [24.9, 27.6, 27.6, 29.4, 30.6, 32.2, 34.0],
+    production: [12.4, 12.8, 12.5, 12.7, 13.1, 13.4, 13.8],
+    imports: [12.9, 15.1, 15.6, 17.1, 17.9, 19.2, 20.5],
+    importDependency: [51.8, 54.7, 56.5, 58.2, 58.5, 59.6, 60.3],
+    connections: [24.3, 27.9, 28.7, 30.4, 31.7, 33.0, 34.2], // crore
+    subsidyBurden: [25849, 24468, 13498, 4679, 5813, 3171, 2400], // crore INR
+  };
+
+  // India Oil (HSD + MS) Data (Source: PPAC, in MMT)
+  const oilData = {
+    years: ["2018-19", "2019-20", "2020-21", "2021-22", "2022-23", "2023-24", "2024-25E"],
+    diesel: {
+      consumption: [83.5, 82.6, 72.7, 80.1, 87.9, 89.8, 92.5],
+      price: [65.5, 69.2, 79.0, 93.5, 89.6, 87.9, 87.6], // INR/litre avg
+    },
+    petrol: {
+      consumption: [28.3, 30.0, 27.1, 30.8, 34.3, 36.0, 38.2],
+      price: [72.5, 75.2, 86.3, 103.0, 102.1, 101.5, 101.2],
+    },
+    crudeImport: [226.5, 227.0, 196.5, 212.0, 232.7, 232.5, 238.0], // MMT
+    crudePrice: [69.9, 60.5, 44.3, 79.2, 89.1, 82.3, 76.5], // USD/bbl avg
+    importBill: [111.9, 101.4, 62.2, 119.2, 157.5, 132.4, 125.0], // USD Bn
+  };
+
+  // Enhanced LPG Data
+  const lpgEnhanced = {
+    stateWise: [
+      { state: "Uttar Pradesh", value: 4.82 }, { state: "Maharashtra", value: 3.45 }, { state: "Rajasthan", value: 2.28 },
+      { state: "West Bengal", value: 2.15 }, { state: "Madhya Pradesh", value: 2.08 }, { state: "Tamil Nadu", value: 1.96 },
+      { state: "Gujarat", value: 1.85 }, { state: "Karnataka", value: 1.78 }, { state: "Bihar", value: 1.65 }, { state: "Andhra Pradesh", value: 1.52 },
+    ],
+    ujjwala: { years: ["2016-17", "2017-18", "2018-19", "2019-20", "2020-21", "2021-22", "2022-23", "2023-24"], connections: [1.58, 3.18, 7.19, 8.03, 8.03, 9.13, 9.59, 10.35] },
+    perCapita: [
+      { country: "USA", value: 47.2 }, { country: "Saudi Arabia", value: 42.5 }, { country: "Japan", value: 38.1 },
+      { country: "South Korea", value: 35.6 }, { country: "Brazil", value: 25.8 }, { country: "World Avg", value: 22.4 },
+      { country: "China", value: 18.7 }, { country: "India", value: 16.8 }, { country: "Indonesia", value: 14.2 }, { country: "Bangladesh", value: 4.5 },
+    ],
+    priceBuildup: [
+      { label: "Refinery Gate Price", value: 603.26, color: "#1e40af" }, { label: "Freight Charges", value: 45.50, color: "#0891b2" },
+      { label: "Bottling Charges", value: 47.82, color: "#7c3aed" }, { label: "Distributor Commission", value: 61.64, color: "#b45309" },
+      { label: "GST (5%)", value: 37.91, color: "#dc2626" }, { label: "Subsidy Credit (DBT)", value: -6.75, color: "#16a34a" },
+    ],
+    refineryProd: [
+      { name: "IOCL", value: 4250, color: "#dc2626" }, { name: "RIL", value: 2980, color: "#1e40af" },
+      { name: "BPCL", value: 2150, color: "#059669" }, { name: "HPCL", value: 1620, color: "#b45309" },
+      { name: "MRPL", value: 890, color: "#7c3aed" }, { name: "CPCL", value: 560, color: "#0891b2" },
+      { name: "NRL", value: 340, color: "#78350f" }, { name: "Others", value: 610, color: "#999" },
+    ],
+    seasonal: { months: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"], index: [92, 88, 85, 86, 90, 95, 102, 108, 115, 118, 112, 105] },
+  };
+
+  // Enhanced Oil Data
+  const oilEnhanced = {
+    petrolBuildup: [
+      { label: "Base Price (Refinery)", value: 39.14, color: "#1e40af" }, { label: "Central Excise Duty", value: 19.90, color: "#dc2626" },
+      { label: "Dealer Commission", value: 3.76, color: "#b45309" }, { label: "State VAT (Delhi)", value: 16.07, color: "#7c3aed" },
+      { label: "Other Charges", value: 15.93, color: "#78350f" },
+    ],
+    dieselBuildup: [
+      { label: "Base Price (Refinery)", value: 41.34, color: "#1e40af" }, { label: "Central Excise Duty", value: 21.80, color: "#dc2626" },
+      { label: "Dealer Commission", value: 2.58, color: "#b45309" }, { label: "State VAT (Delhi)", value: 12.76, color: "#7c3aed" },
+      { label: "Other Charges", value: 9.12, color: "#78350f" },
+    ],
+    cityPrices: [
+      { city: "Delhi", petrol: 94.72, diesel: 87.62 }, { city: "Mumbai", petrol: 103.44, diesel: 89.97 },
+      { city: "Chennai", petrol: 100.75, diesel: 92.43 }, { city: "Kolkata", petrol: 104.95, diesel: 91.76 },
+      { city: "Bengaluru", petrol: 101.94, diesel: 87.89 }, { city: "Hyderabad", petrol: 107.41, diesel: 95.65 },
+      { city: "Jaipur", petrol: 104.88, diesel: 90.36 }, { city: "Lucknow", petrol: 94.65, diesel: 87.82 },
+    ],
+    omcShare: [
+      { name: "IOCL", outlets: 35844, value: 47.2, color: "#dc2626" },
+      { name: "BPCL", outlets: 20147, value: 26.5, color: "#1e40af" },
+      { name: "HPCL", outlets: 20025, value: 26.3, color: "#059669" },
+    ],
+    refineryThroughput: [
+      { company: "IOCL", capacity: 80.7, throughput: 83.2, utilization: 103.1 },
+      { company: "RIL (Jamnagar)", capacity: 68.2, throughput: 70.5, utilization: 103.4 },
+      { company: "BPCL", capacity: 38.3, throughput: 36.8, utilization: 96.1 },
+      { company: "HPCL", capacity: 24.9, throughput: 25.6, utilization: 102.8 },
+      { company: "MRPL", capacity: 15.0, throughput: 16.2, utilization: 108.0 },
+      { company: "Nayara Energy", capacity: 20.0, throughput: 20.8, utilization: 104.0 },
+      { company: "CPCL", capacity: 11.5, throughput: 10.9, utilization: 94.8 },
+      { company: "NRL", capacity: 3.0, throughput: 2.8, utilization: 93.3 },
+    ],
+    ethanol: { years: ["2018-19", "2019-20", "2020-21", "2021-22", "2022-23", "2023-24", "2024-25E"], blend: [5.0, 5.6, 8.1, 10.2, 12.1, 14.6, 17.0] },
+  };
+
+  // Natural Gas Data
+  const gasData = {
+    years: ["2018-19", "2019-20", "2020-21", "2021-22", "2022-23", "2023-24", "2024-25E"],
+    production: [32.9, 31.2, 28.7, 34.0, 34.5, 35.4, 37.0],
+    consumption: [54.2, 56.8, 55.6, 59.3, 57.8, 61.2, 64.5],
+    lngImports: [23.7, 28.1, 30.5, 28.5, 26.3, 28.8, 30.2],
+    importDependency: [43.7, 49.5, 54.9, 48.1, 45.5, 47.1, 46.8],
+    cgd: {
+      years: ["2018-19", "2019-20", "2020-21", "2021-22", "2022-23", "2023-24", "2024-25E"],
+      gas: [86, 136, 228, 295, 407, 538, 630],
+      png: [42, 52, 67, 88, 102, 118, 135],
+      cng: [2135, 2998, 3857, 4715, 5555, 6400, 7200],
+    },
+    pricing: {
+      apm: [3.36, 2.39, 1.79, 6.10, 8.57, 6.50, 6.50],
+      kgBasin: [7.67, 5.61, 4.06, 9.92, 12.46, 9.96, 9.30],
+      spotLng: [9.80, 4.50, 7.20, 25.60, 18.40, 12.50, 11.80],
+    },
+    pipeline: { operational: 22162, underConstruction: 14239, planned: 8000, target: 34500 },
+  };
+
+  // Refining & Infrastructure Data
+  const infraData = {
+    refineryCapacity: [
+      { company: "IOCL", capacity: 80.7, refineries: 11, color: "#dc2626" },
+      { company: "RIL", capacity: 68.2, refineries: 2, color: "#1e40af" },
+      { company: "BPCL", capacity: 38.3, refineries: 4, color: "#059669" },
+      { company: "HPCL", capacity: 24.9, refineries: 3, color: "#b45309" },
+      { company: "Nayara", capacity: 20.0, refineries: 1, color: "#7c3aed" },
+      { company: "MRPL", capacity: 15.0, refineries: 1, color: "#0891b2" },
+      { company: "CPCL", capacity: 11.5, refineries: 2, color: "#78350f" },
+      { company: "NRL", capacity: 3.0, refineries: 1, color: "#f59e0b" },
+    ],
+    utilization: [103.4, 101.7, 88.5, 99.8, 107.2, 105.8, 104.0],
+    pipelines: [
+      { type: "Crude Oil", km: 10894, color: "#78350f" }, { type: "Petroleum Products", km: 16459, color: "#1e40af" },
+      { type: "Natural Gas", km: 22162, color: "#059669" }, { type: "LPG", km: 3690, color: "#f59e0b" },
+    ],
+    spr: [
+      { location: "Visakhapatnam", capacity: 1.33, status: "Operational", color: "#16a34a" },
+      { location: "Mangaluru", capacity: 1.50, status: "Operational", color: "#16a34a" },
+      { location: "Padur", capacity: 2.50, status: "Operational", color: "#16a34a" },
+      { location: "Chandikhol", capacity: 4.40, status: "Phase-II (Proposed)", color: "#f59e0b" },
+      { location: "Padur Expansion", capacity: 2.50, status: "Phase-II (Proposed)", color: "#f59e0b" },
+    ],
+    lngTerminals: [
+      { name: "Dahej (GSPL)", capacity: 17.5 }, { name: "Hazira (Shell)", capacity: 5.0 },
+      { name: "Dabhol (RGPPL)", capacity: 5.0 }, { name: "Kochi (Petronet)", capacity: 5.0 },
+      { name: "Ennore (IOCL)", capacity: 5.0 }, { name: "Mundra (GSPC)", capacity: 5.0 },
+    ],
+  };
+
+  // Enhanced Overview Data
+  const overviewEnhanced = {
+    energyMix: [
+      { label: "Coal", value: 55.2, color: "#57534e" }, { label: "Petroleum", value: 26.8, color: "#78350f" },
+      { label: "Natural Gas", value: 6.2, color: "#059669" }, { label: "Renewables", value: 7.1, color: "#16a34a" },
+      { label: "Nuclear", value: 1.3, color: "#7c3aed" }, { label: "Hydro", value: 3.4, color: "#0891b2" },
+    ],
+    globalConsumers: [
+      { country: "USA", value: 20.1 }, { country: "China", value: 16.0 }, { country: "India", value: 5.5 },
+      { country: "Saudi Arabia", value: 3.8 }, { country: "Japan", value: 3.5 }, { country: "Russia", value: 3.4 },
+      { country: "South Korea", value: 2.7 }, { country: "Brazil", value: 2.6 }, { country: "Canada", value: 2.3 }, { country: "Germany", value: 2.1 },
+    ],
+    securityIndicators: [
+      { label: "Crude Import Dep.", actual: 87.7, target: 67, unit: "%", color: "#dc2626", targetYear: "2030" },
+      { label: "Gas Import Dep.", actual: 46.8, target: 35, unit: "%", color: "#b45309", targetYear: "2030" },
+      { label: "SPR Cover", actual: 9.5, target: 22, unit: "days", color: "#7c3aed", targetYear: "2030" },
+      { label: "Ethanol Blend", actual: 17, target: 20, unit: "%", color: "#16a34a", targetYear: "2025-26" },
+      { label: "RE in Electricity", actual: 43.4, target: 50, unit: "%", color: "#059669", targetYear: "2030" },
+    ],
+    emissions: {
+      years: ["2019-20", "2020-21", "2021-22", "2022-23", "2023-24", "2024-25E"],
+      transport: [245, 210, 238, 260, 268, 275],
+      industry: [185, 165, 180, 195, 200, 205],
+      residential: [78, 82, 80, 76, 74, 72],
+      other: [52, 48, 54, 57, 58, 60],
+    },
+    projections: {
+      scenarios: ["IEA STEPS", "IEA APS", "NITI Reference", "NITI Ambitious"],
+      years: ["2025", "2030", "2035", "2040", "2047"],
+      values: [
+        [242, 278, 305, 328, 360],
+        [242, 262, 268, 255, 230],
+        [242, 285, 318, 348, 380],
+        [242, 258, 255, 235, 195],
+      ],
+    },
+  };
+
+  // ===== UTILITY FUNCTIONS =====
+  const maxVal = (arr) => Math.max(...arr);
+  const barWidth = (val, max) => `${(val / max) * 100}%`;
+  const interpolateColor = (low, high, t) => {
+    const parse = (hex) => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+    const [lr, lg, lb] = parse(low);
+    const [hr, hg, hb] = parse(high);
+    const r = Math.round(lr + (hr - lr) * t), g = Math.round(lg + (hg - lg) * t), b = Math.round(lb + (hb - lb) * t);
+    return `rgb(${r},${g},${b})`;
+  };
+
+  // ===== CHART COMPONENTS =====
+
+  const SectionToggle = () => (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6, marginBottom: 20 }}>
+      {[
+        { key: "lpg", label: "LPG", icon: "🔥" },
+        { key: "oil", label: "Oil & Fuels", icon: "⛽" },
+        { key: "gas", label: "Natural Gas", icon: "💨" },
+        { key: "infra", label: "Refining & Infra", icon: "🏭" },
+        { key: "overview", label: "Overview", icon: "📊" },
+      ].map((s) => (
+        <button
+          key={s.key}
+          onClick={() => { setActiveSection(s.key); setHoveredBar(null); }}
+          style={{
+            flex: "1 1 100px", padding: "10px 8px", border: `2px solid ${activeSection === s.key ? "#0f3460" : "#e5e5e0"}`,
+            borderRadius: 10, cursor: "pointer", fontSize: 11, fontWeight: activeSection === s.key ? 700 : 400,
+            background: activeSection === s.key ? "#0f3460" : "#fff",
+            color: activeSection === s.key ? "#fff" : "#666",
+            fontFamily: "inherit", transition: "all 0.2s",
+          }}
+        >
+          <span style={{ fontSize: 17, display: "block", marginBottom: 3 }}>{s.icon}</span>
+          {s.label}
+        </button>
+      ))}
+    </div>
+  );
+
+  const StatCard = ({ label, value, unit, color, sub }) => (
+    <div style={{ background: "#fff", border: "1px solid #e5e5e0", borderRadius: 10, padding: "16px 18px", flex: "1 1 140px" }}>
+      <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.5, color: "#999", marginBottom: 6 }}>{label}</div>
+      <div style={{ fontSize: 28, fontWeight: 800, color: color || "#1a1a2e", fontFamily: "'Courier New', monospace" }}>
+        {value}<span style={{ fontSize: 12, fontWeight: 400, color: "#999", marginLeft: 4 }}>{unit}</span>
+      </div>
+      {sub && <div style={{ fontSize: 11, color: "#999", marginTop: 4 }}>{sub}</div>}
+    </div>
+  );
+
+  const HorizontalBarChart = ({ data, labels, colors, maxValue, title, unit }) => (
+    <div style={{ background: "#fff", border: "1px solid #e5e5e0", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+      <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999", marginBottom: 14 }}>{title}</div>
+      {labels.map((label, i) => (
+        <div key={i} style={{ marginBottom: 10 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+            <span style={{ fontSize: 11, color: "#666", fontWeight: 600 }}>{label}</span>
+            <span style={{ fontSize: 11, color: "#333", fontWeight: 700, fontFamily: "monospace" }}>
+              {Array.isArray(data[0]) ? data.map((d, j) => `${d[i]}${j < data.length - 1 ? " / " : ""}`).join("") : `${data[i]} ${unit}`}
+            </span>
+          </div>
+          <div style={{ display: "flex", gap: 2, height: 20, borderRadius: 4, overflow: "hidden", background: "#f5f5f2" }}>
+            {Array.isArray(data[0]) ? data.map((d, j) => (
+              <div
+                key={j}
+                onMouseEnter={() => setHoveredBar(`${title}-${i}-${j}`)}
+                onMouseLeave={() => setHoveredBar(null)}
+                style={{
+                  width: barWidth(d[i], maxValue),
+                  background: hoveredBar === `${title}-${i}-${j}` ? colors[j] + "dd" : colors[j],
+                  transition: "all 0.3s", borderRadius: 3,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 9, color: "#fff", fontWeight: 700,
+                }}
+              >
+                {d[i] > maxValue * 0.08 ? d[i] : ""}
+              </div>
+            )) : (
+              <div
+                style={{
+                  width: barWidth(data[i], maxValue),
+                  background: typeof colors === "string" ? colors : colors[i % colors.length],
+                  transition: "all 0.3s", borderRadius: 3,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 9, color: "#fff", fontWeight: 700,
+                }}
+              >
+                {data[i] > maxValue * 0.08 ? `${data[i]}` : ""}
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const StackedBarChart = ({ title, labels, series, colors, legendLabels }) => {
+    const maxTotal = Math.max(...labels.map((_, i) => series.reduce((sum, s) => sum + s[i], 0)));
+    return (
+      <div style={{ background: "#fff", border: "1px solid #e5e5e0", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+          <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999" }}>{title}</div>
+          <div style={{ display: "flex", gap: 12 }}>
+            {legendLabels.map((l, i) => (
+              <span key={i} style={{ fontSize: 10, color: colors[i], fontWeight: 700, display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ width: 10, height: 10, borderRadius: 2, background: colors[i], display: "inline-block" }} />
+                {l}
+              </span>
+            ))}
+          </div>
+        </div>
+        {labels.map((label, i) => {
+          const total = series.reduce((sum, s) => sum + s[i], 0);
+          return (
+            <div key={i} style={{ marginBottom: 10 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                <span style={{ fontSize: 11, color: "#666", fontWeight: 600 }}>{label}</span>
+                <span style={{ fontSize: 11, color: "#333", fontWeight: 700, fontFamily: "monospace" }}>{total.toFixed(1)} MMT</span>
+              </div>
+              <div style={{ display: "flex", gap: 1, height: 22, borderRadius: 4, overflow: "hidden", background: "#f5f5f2" }}>
+                {series.map((s, j) => (
+                  <div
+                    key={j}
+                    style={{
+                      width: `${(s[i] / maxTotal) * 100}%`,
+                      background: colors[j], transition: "all 0.3s",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 9, color: "#fff", fontWeight: 700,
+                    }}
+                  >
+                    {s[i] > maxTotal * 0.06 ? s[i] : ""}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const LineIndicator = ({ title, data, labels, color, unit, suffix }) => (
+    <div style={{ background: "#fff", border: "1px solid #e5e5e0", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+      <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999", marginBottom: 12 }}>{title}</div>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 120, padding: "0 4px" }}>
+        {data.map((val, i) => {
+          const max = maxVal(data);
+          const min = Math.min(...data);
+          const range = max - min || 1;
+          const height = ((val - min) / range) * 80 + 20;
+          return (
+            <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+              <span style={{ fontSize: 9, fontWeight: 700, color: color, fontFamily: "monospace" }}>
+                {val}{suffix || ""}
+              </span>
+              <div
+                style={{
+                  width: "100%", maxWidth: 40, height: `${height}%`,
+                  background: `${color}22`, border: `2px solid ${color}`,
+                  borderRadius: "4px 4px 0 0", transition: "all 0.3s",
+                }}
+              />
+              <span style={{ fontSize: 8, color: "#999", textAlign: "center", lineHeight: 1.1 }}>
+                {labels[i].replace("-", "\n")}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      {unit && <div style={{ fontSize: 10, color: "#bbb", textAlign: "right", marginTop: 6 }}>{unit}</div>}
+    </div>
+  );
+
+  // --- DonutChart (SVG ring) ---
+  const DonutChart = ({ title, segments, centerValue, centerLabel }) => {
+    const total = segments.reduce((s, seg) => s + (seg.value || 0), 0) || 1;
+    const circumference = 2 * Math.PI * 70;
+    const arcs = [];
+    let cum = 0;
+    segments.forEach((seg) => {
+      const arc = ((seg.value || 0) / total) * circumference;
+      arcs.push({ ...seg, arc, offset: circumference - cum + circumference * 0.25 });
+      cum += arc;
+    });
+    return (
+      <div style={{ background: "#fff", border: "1px solid #e5e5e0", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+        <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999", marginBottom: 10 }}>{title}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
+          <svg viewBox="0 0 200 200" style={{ width: 180, height: 180, flexShrink: 0 }}>
+            {arcs.map((a, i) => (
+              <circle key={i} cx="100" cy="100" r="70" fill="none" stroke={a.color} strokeWidth="28"
+                strokeDasharray={`${Math.max(a.arc - 1.5, 0)} ${circumference - Math.max(a.arc - 1.5, 0)}`} strokeDashoffset={a.offset}
+                style={{ transition: "all 0.3s" }} />
+            ))}
+            {centerValue && <text x="100" y="95" textAnchor="middle" style={{ fontSize: 22, fontWeight: 800, fill: "#1a1a2e", fontFamily: "'Courier New', monospace" }}>{centerValue}</text>}
+            {centerLabel && <text x="100" y="115" textAnchor="middle" style={{ fontSize: 10, fill: "#999" }}>{centerLabel}</text>}
+          </svg>
+          <div style={{ flex: 1, minWidth: 140 }}>
+            {segments.map((seg, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                <span style={{ width: 10, height: 10, borderRadius: 2, background: seg.color, flexShrink: 0 }} />
+                <span style={{ fontSize: 11, color: "#666", flex: 1 }}>{seg.label || seg.name}</span>
+                <span style={{ fontSize: 11, fontWeight: 700, fontFamily: "monospace", color: "#333" }}>{seg.value} <span style={{ color: "#999", fontWeight: 400 }}>({Math.round(seg.value / total * 100)}%)</span></span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // --- ComparisonTable ---
+  const ComparisonTable = ({ title, headers, rows, note }) => (
+    <div style={{ background: "#fff", border: "1px solid #e5e5e0", borderRadius: 10, padding: "16px 20px", marginBottom: 16, overflowX: "auto" }}>
+      <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999", marginBottom: 10 }}>{title}</div>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, fontFamily: "inherit" }}>
+        <thead>
+          <tr>{headers.map((h, i) => <th key={i} style={{ background: "#1a1a2e", color: "#fff", padding: "8px 10px", textAlign: i === 0 ? "left" : "center", fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>{h}</th>)}</tr>
+        </thead>
+        <tbody>
+          {rows.map((row, ri) => (
+            <tr key={ri} style={{ background: ri % 2 === 0 ? "#fff" : "#f9f9f7" }}>
+              {row.cells.map((cell, ci) => (
+                <td key={ci} style={{ padding: "7px 10px", textAlign: ci === 0 ? "left" : "center", fontWeight: ci === 0 ? 600 : 400, color: row.cellColors && row.cellColors[ci] ? row.cellColors[ci] : "#444", fontFamily: ci > 0 ? "monospace" : "inherit" }}>{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {note && <div style={{ fontSize: 10, color: "#999", marginTop: 8 }}>{note}</div>}
+    </div>
+  );
+
+  // --- SparkLine (inline SVG) ---
+  const SparkLine = ({ data, color, width, height }) => {
+    const w = width || 100, h = height || 30;
+    const max = Math.max(...data), min = Math.min(...data), range = max - min || 1;
+    const points = data.map((v, i) => `${i * (w / (data.length - 1))},${h - 2 - ((v - min) / range) * (h - 4)}`).join(" ");
+    return <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height: h }}><polyline points={points} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><polyline points={`0,${h} ${points} ${w},${h}`} fill={color} fillOpacity="0.08" stroke="none" /></svg>;
+  };
+
+  // --- HeatMapGrid ---
+  const HeatMapGrid = ({ title, data, columns, lowColor, highColor, unit }) => {
+    const allVals = data.flatMap((r) => columns.map((c) => r[c.key]));
+    const min = Math.min(...allVals), max = Math.max(...allVals), range = max - min || 1;
+    return (
+      <div style={{ background: "#fff", border: "1px solid #e5e5e0", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+        <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999", marginBottom: 10 }}>{title}</div>
+        <div style={{ display: "grid", gridTemplateColumns: `100px repeat(${columns.length}, 1fr)`, gap: 3 }}>
+          <div />
+          {columns.map((c, i) => <div key={i} style={{ fontSize: 9, fontWeight: 700, textAlign: "center", color: "#666", padding: "4px 0" }}>{c.label}</div>)}
+          {data.map((row, ri) => (
+            <React.Fragment key={ri}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#444", padding: "6px 4px", display: "flex", alignItems: "center" }}>{row.label}</div>
+              {columns.map((c, ci) => {
+                const t = (row[c.key] - min) / range;
+                return <div key={ci} style={{ background: interpolateColor(lowColor, highColor, t), padding: "6px 4px", borderRadius: 3, textAlign: "center", fontSize: 10, fontWeight: 700, color: t > 0.6 ? "#fff" : "#333", fontFamily: "monospace" }}>{row[c.key]}</div>;
+              })}
+            </React.Fragment>
+          ))}
+        </div>
+        {unit && <div style={{ fontSize: 10, color: "#999", marginTop: 6, textAlign: "right" }}>{unit}</div>}
+      </div>
+    );
+  };
+
+  // --- GaugeIndicator (SVG semicircle) ---
+  const GaugeIndicator = ({ title, actual, target, unit, color, width }) => {
+    const arcLength = Math.PI * 80;
+    const ratio = Math.min(actual / target, 1.2);
+    const fillLength = ratio * arcLength;
+    const pct = Math.round((actual / target) * 100);
+    return (
+      <div style={{ background: "#fff", border: "1px solid #e5e5e0", borderRadius: 10, padding: "12px 14px", flex: width || "1 1 160px", textAlign: "center" }}>
+        <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: 1, color: "#999", marginBottom: 4 }}>{title}</div>
+        <svg viewBox="0 0 200 120" style={{ width: "100%", maxWidth: 160, height: 80 }}>
+          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e5e5e0" strokeWidth="16" strokeLinecap="round" />
+          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke={color} strokeWidth="16" strokeLinecap="round"
+            strokeDasharray={`${fillLength} ${arcLength}`} />
+          <text x="100" y="88" textAnchor="middle" style={{ fontSize: 24, fontWeight: 800, fill: color, fontFamily: "'Courier New', monospace" }}>{actual}</text>
+          <text x="100" y="108" textAnchor="middle" style={{ fontSize: 10, fill: "#999" }}>/ {target} {unit}</text>
+        </svg>
+        <div style={{ fontSize: 10, color: pct >= 100 ? "#16a34a" : pct >= 75 ? "#b45309" : "#dc2626", fontWeight: 700 }}>{pct}% of target</div>
+      </div>
+    );
+  };
+
+  // --- PriceBuildup (vertical stacked) ---
+  const PriceBuildup = ({ title, components, unit }) => {
+    const positive = components.filter((c) => c.value > 0);
+    const negative = components.filter((c) => c.value < 0);
+    const total = positive.reduce((s, c) => s + c.value, 0) + negative.reduce((s, c) => s + c.value, 0);
+    const maxH = 200;
+    return (
+      <div style={{ background: "#fff", border: "1px solid #e5e5e0", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+        <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999", marginBottom: 4 }}>{title}</div>
+        <div style={{ fontSize: 20, fontWeight: 800, color: "#1a1a2e", fontFamily: "'Courier New', monospace", marginBottom: 12 }}>
+          {unit}{total.toFixed(2)}
+        </div>
+        {components.map((c, i) => {
+          const h = Math.abs(c.value) / positive.reduce((s, p) => s + p.value, 0) * maxH;
+          return (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
+              <span style={{ fontSize: 10, color: "#666", width: 140, flexShrink: 0, textAlign: "right" }}>{c.label}</span>
+              <div style={{ flex: 1, height: 18, background: "#f5f5f2", borderRadius: 3, overflow: "hidden", position: "relative" }}>
+                <div style={{
+                  width: `${(Math.abs(c.value) / positive.reduce((s, p) => s + p.value, 0)) * 100}%`,
+                  height: "100%", background: c.value < 0 ? `repeating-linear-gradient(45deg, ${c.color}, ${c.color} 4px, ${c.color}88 4px, ${c.color}88 8px)` : c.color,
+                  borderRadius: 3, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#fff", fontWeight: 700,
+                }}>{Math.abs(c.value).toFixed(1)}</div>
+              </div>
+              <span style={{ fontSize: 10, fontWeight: 700, fontFamily: "monospace", color: c.value < 0 ? "#16a34a" : "#333", width: 50, textAlign: "right" }}>
+                {c.value < 0 ? "-" : ""}₹{Math.abs(c.value).toFixed(1)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
+      <SectionToggle />
+
+      {/* ===== LPG Section ===== */}
+      {activeSection === "lpg" && (
+        <div>
+          {/* Key Metrics */}
+          <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+            <StatCard label="LPG Demand 2024-25E" value="34.0" unit="MMT" color="#dc2626" sub="Up from 24.9 MMT in 2018-19" />
+            <StatCard label="Domestic Production" value="13.8" unit="MMT" color="#16a34a" sub="Only 40% of total demand" />
+            <StatCard label="Import Dependency" value="60.3" unit="%" color="#b45309" sub="Imports: 20.5 MMT" />
+            <StatCard label="LPG Connections" value="34.2" unit="Cr" color="#7c3aed" sub="Near saturation coverage" />
+          </div>
+
+          <StackedBarChart
+            title="LPG Supply Composition — Domestic vs Imports (MMT)"
+            labels={lpgData.years}
+            series={[lpgData.production, lpgData.imports]}
+            colors={["#16a34a", "#dc2626"]}
+            legendLabels={["Domestic Production", "Imports"]}
+          />
+
+          <LineIndicator
+            title="Import Dependency Trend"
+            data={lpgData.importDependency}
+            labels={lpgData.years}
+            color="#b45309"
+            suffix="%"
+            unit="% of total consumption met by imports"
+          />
+
+          <HorizontalBarChart
+            title="Year-wise LPG Demand (MMT)"
+            data={lpgData.demand}
+            labels={lpgData.years}
+            colors="#0f3460"
+            maxValue={maxVal(lpgData.demand)}
+            unit="MMT"
+          />
+
+          <LineIndicator
+            title="Government Subsidy Burden on LPG"
+            data={lpgData.subsidyBurden}
+            labels={lpgData.years}
+            color="#be185d"
+            unit="INR Crore — declining trend due to market-linked pricing"
+          />
+
+          {/* Policy Insights */}
+          <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#92400e", marginBottom: 8 }}>Key Policy Observations — LPG</div>
+            <ul style={{ fontSize: 12, color: "#78350f", lineHeight: 1.8, margin: 0, paddingLeft: 18 }}>
+              <li><strong>PM Ujjwala Yojana:</strong> 10.35 crore free connections to BPL households — near-universal access achieved</li>
+              <li><strong>Rising import bill:</strong> India imports ~60% of its LPG, making it vulnerable to global price shocks</li>
+              <li><strong>Subsidy rationalisation:</strong> From ~₹26,000 Cr (2018-19) to ~₹2,400 Cr (2024-25E) via DBT and price deregulation</li>
+              <li><strong>Demand growth:</strong> 5.3% CAGR driven by rural penetration and shift from solid fuels</li>
+              <li><strong>Infrastructure:</strong> 4 new LPG import terminals planned; bottling capacity expansion ongoing</li>
+            </ul>
+          </div>
+
+          {/* --- Ujjwala Yojana Coverage --- */}
+          <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+            <StatCard label="PMUY 1.0 (2016-19)" value="8.03" unit="Cr" color="#7c3aed" sub="Free connections to BPL" />
+            <StatCard label="PMUY 2.0 (2021-24)" value="2.32" unit="Cr" color="#7c3aed" sub="Extended to migrant workers" />
+            <StatCard label="Total Ujjwala" value="10.35" unit="Cr" color="#be185d" sub="Near-universal access" />
+          </div>
+          <HorizontalBarChart
+            title="PM Ujjwala Yojana — Cumulative Connections (Crore)"
+            data={lpgEnhanced.ujjwala.connections}
+            labels={lpgEnhanced.ujjwala.years}
+            colors="#7c3aed"
+            maxValue={11}
+            unit="Cr"
+          />
+
+          {/* --- State-wise LPG Consumption --- */}
+          <HorizontalBarChart
+            title="Top 10 States by LPG Consumption (2023-24, MMT)"
+            data={lpgEnhanced.stateWise.map((s) => s.value)}
+            labels={lpgEnhanced.stateWise.map((s) => s.state)}
+            colors="#dc2626"
+            maxValue={5.0}
+            unit="MMT"
+          />
+
+          {/* --- Per Capita LPG: India vs World --- */}
+          <HorizontalBarChart
+            title="Per Capita LPG Consumption — Global Comparison (kg/person/year)"
+            data={lpgEnhanced.perCapita.map((c) => c.value)}
+            labels={lpgEnhanced.perCapita.map((c) => c.country)}
+            colors={lpgEnhanced.perCapita.map((c) => c.country === "India" ? "#f59e0b" : c.country === "World Avg" ? "#dc2626" : "#0f3460")}
+            maxValue={50}
+            unit="kg/yr"
+          />
+
+          {/* --- Cylinder Price Buildup --- */}
+          <PriceBuildup
+            title="14.2 kg LPG Cylinder Price Buildup (Delhi, Jan 2025)"
+            components={lpgEnhanced.priceBuildup}
+            unit="₹"
+          />
+          <div style={{ fontSize: 10, color: "#999", marginTop: -10, marginBottom: 16, paddingLeft: 4 }}>
+            Subsidy credited directly to consumer bank account via Direct Benefit Transfer (DBT)
+          </div>
+
+          {/* --- Refinery-wise LPG Production --- */}
+          <DonutChart
+            title="Refinery-wise LPG Production (2023-24, Thousand MT)"
+            segments={lpgEnhanced.refineryProd}
+            centerValue="13,400"
+            centerLabel="TMT Total"
+          />
+
+          {/* --- Monthly Demand Pattern --- */}
+          <LineIndicator
+            title="Monthly LPG Demand Pattern (Index, 100 = Average)"
+            data={lpgEnhanced.seasonal.index}
+            labels={lpgEnhanced.seasonal.months}
+            color="#b45309"
+            unit="Peak: Dec-Jan (winter cooking/heating demand surge)"
+          />
+        </div>
+      )}
+
+      {/* ===== OIL (Diesel & Petrol) Section ===== */}
+      {activeSection === "oil" && (
+        <div>
+          <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+            <StatCard label="Diesel Consumption" value="92.5" unit="MMT" color="#1e40af" sub="2024-25E — 40% of oil products" />
+            <StatCard label="Petrol Consumption" value="38.2" unit="MMT" color="#dc2626" sub="2024-25E — fastest growing" />
+            <StatCard label="Crude Import Bill" value="$125" unit="Bn" color="#b45309" sub="2024-25E — 85% dependency" />
+            <StatCard label="Crude Oil Price" value="76.5" unit="$/bbl" color="#059669" sub="Indian basket avg 2024-25" />
+          </div>
+
+          <StackedBarChart
+            title="Diesel vs Petrol Consumption Trend (MMT)"
+            labels={oilData.years}
+            series={[oilData.diesel.consumption, oilData.petrol.consumption]}
+            colors={["#1e40af", "#dc2626"]}
+            legendLabels={["HSD (Diesel)", "MS (Petrol)"]}
+          />
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+            <LineIndicator
+              title="Diesel Price Trend"
+              data={oilData.diesel.price}
+              labels={oilData.years}
+              color="#1e40af"
+              suffix=""
+              unit="INR/litre — average retail price"
+            />
+            <LineIndicator
+              title="Petrol Price Trend"
+              data={oilData.petrol.price}
+              labels={oilData.years}
+              color="#dc2626"
+              suffix=""
+              unit="INR/litre — average retail price"
+            />
+          </div>
+
+          <LineIndicator
+            title="Crude Oil Import Volume (MMT)"
+            data={oilData.crudeImport}
+            labels={oilData.years}
+            color="#78350f"
+            unit="MMT — India is world's 3rd largest oil importer"
+          />
+
+          <LineIndicator
+            title="India's Crude Oil Import Bill"
+            data={oilData.importBill}
+            labels={oilData.years}
+            color="#b45309"
+            suffix=""
+            unit="USD Billion — significant current account impact"
+          />
+
+          <HorizontalBarChart
+            title="Indian Basket Crude Oil Price (USD/barrel)"
+            data={oilData.crudePrice}
+            labels={oilData.years}
+            colors={["#059669", "#16a34a", "#22c55e", "#b45309", "#dc2626", "#f59e0b", "#0f3460"]}
+            maxValue={maxVal(oilData.crudePrice)}
+            unit="$/bbl"
+          />
+
+          <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", marginBottom: 8 }}>Key Policy Observations — Oil</div>
+            <ul style={{ fontSize: 12, color: "#1e3a5f", lineHeight: 1.8, margin: 0, paddingLeft: 18 }}>
+              <li><strong>Deregulation:</strong> Petrol deregulated (2010), Diesel (2014) — but prices often held steady before elections</li>
+              <li><strong>Ethanol Blending:</strong> E20 target by 2025-26; current blend ~15% — reduces import dependency by ~$4 Bn/year</li>
+              <li><strong>EV Push:</strong> FAME-II and PM E-DRIVE scheme to reduce petrol/diesel consumption long-term</li>
+              <li><strong>Refining capacity:</strong> India has 253.9 MMTPA — 4th largest globally; plans to add 56 MMTPA by 2028</li>
+              <li><strong>Strategic reserves:</strong> 5.33 MMT at Visakhapatnam, Mangaluru, Padur — covers ~9.5 days of imports</li>
+              <li><strong>Tax structure:</strong> Central excise + state VAT accounts for ~55% of retail petrol price and ~48% of diesel</li>
+            </ul>
+          </div>
+
+          {/* --- Fuel Price Buildup (Side by Side) --- */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+            <PriceBuildup title="Petrol Price Buildup (Delhi)" components={oilEnhanced.petrolBuildup} unit="₹" />
+            <PriceBuildup title="Diesel Price Buildup (Delhi)" components={oilEnhanced.dieselBuildup} unit="₹" />
+          </div>
+          <div style={{ fontSize: 10, color: "#999", marginTop: -10, marginBottom: 16, textAlign: "center" }}>
+            Taxes (excise + VAT) account for ~55% of petrol and ~48% of diesel retail price
+          </div>
+
+          {/* --- City-wise Fuel Prices --- */}
+          <HeatMapGrid
+            title="Fuel Prices Across Major Cities (INR/litre, Jan 2025)"
+            data={oilEnhanced.cityPrices.map((c) => ({ label: c.city, petrol: c.petrol, diesel: c.diesel }))}
+            columns={[{ key: "petrol", label: "Petrol (MS)" }, { key: "diesel", label: "Diesel (HSD)" }]}
+            lowColor="#d4edda"
+            highColor="#dc2626"
+            unit="INR/litre — Variation due to state VAT differences"
+          />
+
+          {/* --- OMC Market Share --- */}
+          <DonutChart
+            title="Oil Marketing Company Retail Outlet Market Share"
+            segments={oilEnhanced.omcShare}
+            centerValue="76,016"
+            centerLabel="Total Outlets"
+          />
+
+          {/* --- Refinery Throughput Table --- */}
+          <ComparisonTable
+            title="Refinery Throughput (2023-24, MMTPA)"
+            headers={["Company", "Capacity", "Throughput", "Utilization"]}
+            rows={oilEnhanced.refineryThroughput.map((r) => ({
+              cells: [r.company, r.capacity, r.throughput, `${r.utilization}%`],
+              cellColors: [null, null, null, r.utilization >= 100 ? "#16a34a" : r.utilization >= 90 ? "#b45309" : "#dc2626"],
+            }))}
+            note="Utilization >100% indicates throughput above nameplate capacity through debottlenecking"
+          />
+
+          {/* --- Ethanol Blending Progress --- */}
+          <LineIndicator
+            title="Ethanol Blending with Petrol (%)"
+            data={oilEnhanced.ethanol.blend}
+            labels={oilEnhanced.ethanol.years}
+            color="#16a34a"
+            suffix="%"
+            unit="Target: E20 (20% blending) by 2025-26"
+          />
+          <div style={{ display: "flex", gap: 16, marginBottom: 16 }}>
+            <GaugeIndicator title="E20 Target Progress" actual={17} target={20} unit="%" color="#16a34a" />
+            <div style={{ flex: "2 1 200px", background: "#ecfdf5", border: "1px solid #a7f3d0", borderRadius: 10, padding: "14px 18px" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#059669", marginBottom: 6 }}>Ethanol Blending Impact</div>
+              <ul style={{ fontSize: 11, color: "#064e3b", lineHeight: 1.8, margin: 0, paddingLeft: 16 }}>
+                <li>Saves ~$4 Bn/year in crude oil import bill</li>
+                <li>Reduces CO2 emissions by ~30 lakh tonnes annually</li>
+                <li>Supports 5 lakh farmers through sugarcane procurement</li>
+                <li>470+ distilleries with 1,700 crore litre capacity</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* --- BS-VI Card --- */}
+          <div style={{ background: "#ecfdf5", border: "1px solid #a7f3d0", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#059669", marginBottom: 8 }}>BS-VI Emission Standards — India's Leap</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12, marginBottom: 10 }}>
+              {[
+                { label: "Compliance", value: "100%", sub: "All new vehicles since Apr 2020" },
+                { label: "Sulphur in Fuel", value: "10 ppm", sub: "Down from 50 ppm (BS-IV)" },
+                { label: "NOx Reduction", value: "25%", sub: "vs BS-IV norms" },
+                { label: "PM Reduction", value: "80%", sub: "Particulate matter" },
+              ].map((item, i) => (
+                <div key={i} style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: "#059669", fontFamily: "'Courier New', monospace" }}>{item.value}</div>
+                  <div style={{ fontSize: 9, color: "#999", textTransform: "uppercase", letterSpacing: 1 }}>{item.label}</div>
+                  <div style={{ fontSize: 9, color: "#666", marginTop: 2 }}>{item.sub}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ fontSize: 11, color: "#064e3b", lineHeight: 1.6 }}>
+              India skipped BS-V entirely, leapfrogging directly from BS-IV to BS-VI — one of the fastest emission standard transitions globally. This required ₹31,000 crore investment by auto and oil companies.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== NATURAL GAS Section ===== */}
+      {activeSection === "gas" && (
+        <div>
+          <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+            <StatCard label="Gas Production 2024-25E" value="37.0" unit="BCM" color="#059669" sub="Domestic output rising" />
+            <StatCard label="Gas Consumption" value="64.5" unit="BCM" color="#1e40af" sub="Growing demand" />
+            <StatCard label="LNG Imports" value="30.2" unit="BCM" color="#b45309" sub="46.8% of consumption" />
+            <StatCard label="Import Dependency" value="46.8" unit="%" color="#dc2626" sub="Lower than crude oil" />
+          </div>
+
+          <StackedBarChart
+            title="Natural Gas Supply — Domestic Production + LNG Imports (BCM)"
+            labels={gasData.years}
+            series={[gasData.production, gasData.lngImports]}
+            colors={["#059669", "#b45309"]}
+            legendLabels={["Domestic Production", "LNG Imports"]}
+          />
+
+          <LineIndicator
+            title="Gas Import Dependency Trend (%)"
+            data={gasData.importDependency}
+            labels={gasData.years}
+            color="#dc2626"
+            suffix="%"
+            unit="% of consumption met by LNG imports"
+          />
+
+          {/* CGD Coverage */}
+          <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999", marginBottom: 10, marginTop: 8 }}>City Gas Distribution (CGD) Expansion</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 16 }}>
+            {[
+              { label: "GAs Authorized", value: "630", data: gasData.cgd.gas, color: "#7c3aed", sub: "Geographical Areas" },
+              { label: "PNG Connections", value: "135 L", data: gasData.cgd.png, color: "#059669", sub: "Piped Natural Gas (Lakh)" },
+              { label: "CNG Stations", value: "7,200", data: gasData.cgd.cng, color: "#1e40af", sub: "Across India" },
+            ].map((item, i) => (
+              <div key={i} style={{ background: "#fff", border: "1px solid #e5e5e0", borderRadius: 10, padding: "14px 16px" }}>
+                <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: 1, color: "#999" }}>{item.label}</div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: item.color, fontFamily: "'Courier New', monospace", margin: "4px 0" }}>{item.value}</div>
+                <div style={{ fontSize: 10, color: "#999", marginBottom: 8 }}>{item.sub}</div>
+                <SparkLine data={item.data} color={item.color} height={35} />
+              </div>
+            ))}
+          </div>
+
+          {/* Gas Pricing */}
+          <ComparisonTable
+            title="Natural Gas Pricing Trends (USD/MMBTU)"
+            headers={["Category", ...gasData.years]}
+            rows={[
+              { cells: ["APM Domestic", ...gasData.pricing.apm] },
+              { cells: ["KG Basin (Difficult)", ...gasData.pricing.kgBasin] },
+              { cells: ["Spot LNG", ...gasData.pricing.spotLng] },
+            ]}
+            note="APM = Administered Price Mechanism. KG Basin prices include difficult field premium. Spot LNG highly volatile."
+          />
+
+          {/* Pipeline Network */}
+          <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+            <GaugeIndicator title="Pipeline Target" actual={22162} target={34500} unit="km" color="#059669" width="1 1 200px" />
+            <div style={{ flex: "2 1 300px" }}>
+              <HorizontalBarChart
+                title="Gas Pipeline Network Status (km)"
+                data={[gasData.pipeline.operational, gasData.pipeline.underConstruction, gasData.pipeline.planned]}
+                labels={["Operational", "Under Construction", "Planned"]}
+                colors={["#059669", "#f59e0b", "#999"]}
+                maxValue={25000}
+                unit="km"
+              />
+            </div>
+          </div>
+
+          {/* Gas Policy Card */}
+          <div style={{ background: "#ecfdf5", border: "1px solid #a7f3d0", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#059669", marginBottom: 8 }}>Key Policy Observations — Natural Gas</div>
+            <ul style={{ fontSize: 12, color: "#064e3b", lineHeight: 1.8, margin: 0, paddingLeft: 18 }}>
+              <li><strong>OALP Rounds:</strong> Open Acreage Licensing Policy — 8 rounds completed, 2.7 lakh sq km awarded</li>
+              <li><strong>CGD Expansion:</strong> 630 GAs authorized covering 98% of India's population and geography</li>
+              <li><strong>Indian Gas Exchange:</strong> IGX launched for transparent gas price discovery (trade started 2020)</li>
+              <li><strong>Kisan Urja Suraksha:</strong> CNG in agricultural operations — tractors, pump sets</li>
+              <li><strong>Gas-based Economy:</strong> Target to increase gas share from 6.2% to 15% of energy mix by 2030</li>
+              <li><strong>Freedom Pricing:</strong> Market-determined prices for deep-water, ultra-deep-water, and high-pressure fields</li>
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* ===== REFINING & INFRASTRUCTURE Section ===== */}
+      {activeSection === "infra" && (
+        <div>
+          <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+            <StatCard label="Refining Capacity" value="253.9" unit="MMTPA" color="#0f3460" sub="4th largest globally" />
+            <StatCard label="Utilization Rate" value="104" unit="%" color="#059669" sub="Above nameplate capacity" />
+            <StatCard label="Pipeline Network" value="53,205" unit="km" color="#1e40af" sub="Crude+Product+Gas+LPG" />
+            <StatCard label="Strategic Reserve" value="5.33" unit="MMT" color="#dc2626" sub="~9.5 days import cover" />
+          </div>
+
+          {/* Refinery Capacity by Company */}
+          <DonutChart
+            title="Refinery Capacity by Company (MMTPA)"
+            segments={infraData.refineryCapacity.map((r) => ({ label: r.company, value: r.capacity, color: r.color }))}
+            centerValue="253.9"
+            centerLabel="MMTPA Total"
+          />
+
+          {/* Capacity Utilization Trend */}
+          <LineIndicator
+            title="Refinery Capacity Utilization (%)"
+            data={infraData.utilization}
+            labels={lpgData.years}
+            color="#059669"
+            suffix="%"
+            unit="Values >100% indicate throughput above nameplate capacity (debottlenecking)"
+          />
+
+          {/* Pipeline Network by Type */}
+          <HorizontalBarChart
+            title="Pipeline Network by Type (km)"
+            data={infraData.pipelines.map((p) => p.km)}
+            labels={infraData.pipelines.map((p) => p.type)}
+            colors={infraData.pipelines.map((p) => p.color)}
+            maxValue={25000}
+            unit="km"
+          />
+
+          {/* Strategic Petroleum Reserve */}
+          <ComparisonTable
+            title="Strategic Petroleum Reserves (SPR)"
+            headers={["Location", "Capacity (MMT)", "Status"]}
+            rows={infraData.spr.map((s) => ({
+              cells: [s.location, s.capacity, s.status],
+              cellColors: [null, null, s.status === "Operational" ? "#16a34a" : "#b45309"],
+            }))}
+            note="Total Phase-I: 5.33 MMT (operational). Phase-II proposed: 6.9 MMT additional."
+          />
+          <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+            <GaugeIndicator title="SPR Phase I + II Target" actual={5.33} target={12.23} unit="MMT" color="#dc2626" />
+            <GaugeIndicator title="Days of Import Cover" actual={9.5} target={22} unit="days" color="#7c3aed" />
+          </div>
+
+          {/* LNG Terminal Infrastructure */}
+          <ComparisonTable
+            title="LNG Regasification Terminals"
+            headers={["Terminal", "Capacity (MMTPA)"]}
+            rows={infraData.lngTerminals.map((t) => ({ cells: [t.name, t.capacity] }))}
+            note={`Total regasification capacity: ${infraData.lngTerminals.reduce((s, t) => s + t.capacity, 0)} MMTPA across ${infraData.lngTerminals.length} terminals`}
+          />
+
+          {/* Terminal Summary */}
+          <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+            <StatCard label="LNG Terminals" value="6" unit="" color="#0891b2" sub="42.5 MMTPA capacity" />
+            <StatCard label="Crude Import Terminals" value="17" unit="" color="#78350f" sub="Across all coasts" />
+            <StatCard label="Product Export Terminals" value="12" unit="" color="#1e40af" sub="Net product exporter" />
+            <StatCard label="LPG Import Terminals" value="8" unit="" color="#f59e0b" sub="Growing with demand" />
+          </div>
+
+          {/* Planned Expansion */}
+          <div style={{ background: "#f5f3ff", border: "1px solid #c4b5fd", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#7c3aed", marginBottom: 8 }}>Major Planned Capacity Additions</div>
+            <ul style={{ fontSize: 12, color: "#5b21b6", lineHeight: 1.8, margin: 0, paddingLeft: 18 }}>
+              <li><strong>Barmer Refinery (Rajasthan):</strong> 9 MMTPA — HPCL-Rajasthan Refinery Ltd JV, commissioning expected 2027</li>
+              <li><strong>Ratnagiri Mega-Refinery:</strong> 60 MMTPA proposed — consortium of Saudi Aramco, ADNOC, and Indian OMCs</li>
+              <li><strong>CPCL Nagapattinam:</strong> 9 MMTPA greenfield — environmental clearance obtained</li>
+              <li><strong>Numaligarh Expansion:</strong> 3 to 9 MMTPA — crude supply via Paradip-Numaligarh pipeline</li>
+              <li><strong>BPCL Bina:</strong> 7.8 to 11 MMTPA expansion — includes petrochemical integration</li>
+              <li><strong>SPR Phase-II:</strong> 6.9 MMT additional storage at Chandikhol (4.4 MMT) and Padur expansion (2.5 MMT)</li>
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* ===== OVERVIEW Section ===== */}
+      {activeSection === "overview" && (
+        <div>
+          <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+            <StatCard label="Total Petroleum Demand" value="233" unit="MMT" color="#0f3460" sub="2024-25E — 3rd largest globally" />
+            <StatCard label="Crude Import Dependency" value="87.7" unit="%" color="#dc2626" sub="Structural vulnerability" />
+            <StatCard label="Refining Capacity" value="253.9" unit="MMTPA" color="#059669" sub="Net exporter of products" />
+            <StatCard label="Per Capita Consumption" value="1.4" unit="TOE" color="#7c3aed" sub="vs 4.5 TOE world average" />
+          </div>
+
+          {/* India's Primary Energy Mix */}
+          <DonutChart
+            title="India's Primary Energy Mix (2023-24)"
+            segments={overviewEnhanced.energyMix}
+            centerValue="100%"
+            centerLabel="Total Energy"
+          />
+
+          {/* Product Mix Table */}
+          <div style={{ background: "#fff", border: "1px solid #e5e5e0", borderRadius: 10, padding: "16px 20px", marginBottom: 16 }}>
+            <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999", marginBottom: 14 }}>
+              Petroleum Product Mix 2024-25E (% of total consumption)
+            </div>
+            {[
+              { name: "HSD (Diesel)", share: 38.2, color: "#1e40af" },
+              { name: "MS (Petrol)", share: 15.8, color: "#dc2626" },
+              { name: "LPG", share: 14.0, color: "#f59e0b" },
+              { name: "Petroleum Coke", share: 7.8, color: "#78350f" },
+              { name: "Naphtha", share: 6.2, color: "#7c3aed" },
+              { name: "ATF (Aviation)", share: 3.8, color: "#0891b2" },
+              { name: "Bitumen", share: 2.8, color: "#57534e" },
+              { name: "Others", share: 11.4, color: "#999" },
+            ].map((item) => (
+              <div key={item.name} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                <span style={{ fontSize: 11, color: "#666", fontWeight: 600, width: 120, flexShrink: 0 }}>{item.name}</span>
+                <div style={{ flex: 1, height: 18, background: "#f5f5f2", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{ width: `${item.share * 2.5}%`, height: "100%", background: item.color, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 6 }}>
+                    <span style={{ fontSize: 9, color: "#fff", fontWeight: 700 }}>{item.share}%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Global Comparison — Top 10 Oil Consumers */}
+          <HorizontalBarChart
+            title="Top 10 Global Oil Consumers (million barrels/day, 2023)"
+            data={overviewEnhanced.globalConsumers.map((c) => c.value)}
+            labels={overviewEnhanced.globalConsumers.map((c) => c.country)}
+            colors={overviewEnhanced.globalConsumers.map((c) => c.country === "India" ? "#f59e0b" : "#0f3460")}
+            maxValue={22}
+            unit="mb/d"
+          />
+
+          {/* Energy Security Indicators */}
+          <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999", marginBottom: 10, marginTop: 8 }}>Energy Security Indicators — Actual vs Target</div>
+          <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+            {overviewEnhanced.securityIndicators.map((ind, i) => (
+              <GaugeIndicator key={i} title={`${ind.label} (${ind.targetYear})`} actual={ind.actual} target={ind.target} unit={ind.unit} color={ind.color} />
+            ))}
+          </div>
+
+          {/* CO2 Emissions */}
+          <StackedBarChart
+            title="CO2 Emissions from Petroleum Sector (MMT CO2)"
+            labels={overviewEnhanced.emissions.years}
+            series={[overviewEnhanced.emissions.transport, overviewEnhanced.emissions.industry, overviewEnhanced.emissions.residential, overviewEnhanced.emissions.other]}
+            colors={["#dc2626", "#b45309", "#7c3aed", "#999"]}
+            legendLabels={["Transport", "Industry", "Residential", "Other"]}
+          />
+
+          {/* India's Energy Landscape quick facts */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+            <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "16px 18px" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#dc2626", marginBottom: 8 }}>Challenges</div>
+              <ul style={{ fontSize: 11, color: "#7f1d1d", lineHeight: 1.8, margin: 0, paddingLeft: 16 }}>
+                <li>87.7% crude oil import dependency</li>
+                <li>~$125 Bn annual import bill</li>
+                <li>Price volatility pass-through lags</li>
+                <li>Subsidy targeting & leakage</li>
+                <li>Under-recovery during price freezes</li>
+              </ul>
+            </div>
+            <div style={{ background: "#ecfdf5", border: "1px solid #a7f3d0", borderRadius: 10, padding: "16px 18px" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#059669", marginBottom: 8 }}>Opportunities</div>
+              <ul style={{ fontSize: 11, color: "#064e3b", lineHeight: 1.8, margin: 0, paddingLeft: 16 }}>
+                <li>E20 ethanol blending by 2025-26</li>
+                <li>Green hydrogen mission (5 MMT by 2030)</li>
+                <li>Gas-based economy (15% share target)</li>
+                <li>EV adoption reducing oil demand</li>
+                <li>Refinery-to-chemical conversions</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Future Demand Projections */}
+          <ComparisonTable
+            title="India Petroleum Demand Projections (MMT Oil Equivalent)"
+            headers={["Scenario", ...overviewEnhanced.projections.years]}
+            rows={overviewEnhanced.projections.scenarios.map((s, i) => ({
+              cells: [s, ...overviewEnhanced.projections.values[i]],
+              cellColors: [null, ...overviewEnhanced.projections.values[i].map((v) => v > 300 ? "#dc2626" : v < 250 ? "#16a34a" : "#b45309")],
+            }))}
+            note="IEA APS = Announced Pledges Scenario; STEPS = Stated Policies; NITI Amb = Net Zero pathway. Base year 2025 = 242 MMT."
+          />
+
+          <div style={{ background: "#f5f3ff", border: "1px solid #c4b5fd", borderRadius: 10, padding: "16px 20px" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#7c3aed", marginBottom: 8 }}>India's Energy Transition Roadmap</div>
+            <div style={{ fontSize: 12, color: "#5b21b6", lineHeight: 1.8 }}>
+              India aims to reduce oil import dependency from ~88% to 67% by 2030 through a combination of increased domestic production (OALP rounds), biofuel blending (E20/B5), natural gas expansion (City Gas Distribution to 630 districts), EV penetration (30% of new vehicle sales by 2030), and green hydrogen (National Green Hydrogen Mission — ₹19,744 Cr). The refining sector, already a net exporter, plans capacity additions at Barmer (9 MMTPA), Ratnagiri (60 MMTPA — proposed), and CPCL expansion.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <div style={{ marginTop: 24, padding: "16px 20px", background: "#f0f0ec", borderRadius: 10, fontSize: 11, color: "#999", lineHeight: 1.7 }}>
+        <strong>Sources:</strong> PPAC (Petroleum Planning & Analysis Cell), MoPNG Annual Reports, Indian Oil & Gas Statistics, CEIC Data, RBI Handbook of Statistics. E = Estimated.
+        <br />
+        <strong>Note:</strong> This is an illustrative dashboard for academic purposes. Figures are based on publicly available government data and industry estimates.
+      </div>
+    </div>
+  );
+}
+
 export default function LowiClassification() {
   const [activeTab, setActiveTab] = useState("publicpolicy");
   const [subTab, setSubTab] = useState("classify");
@@ -784,7 +1872,7 @@ export default function LowiClassification() {
             IIM Mumbai PPM — Assignment & Learning
           </div>
           <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, lineHeight: 1.2 }}>
-            {activeTab === "publicpolicy" ? "Public Policy" : "Public Procurement"}
+            {activeTab === "publicpolicy" ? "Public Policy" : activeTab === "energy" ? "Energy Dashboard" : "Public Procurement"}
           </h1>
         </div>
       </div>
@@ -795,6 +1883,7 @@ export default function LowiClassification() {
           {[
             { key: "publicpolicy", label: "Public Policy" },
             { key: "procurement", label: "Public Procurement" },
+            { key: "energy", label: "Energy Dashboard" },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -812,6 +1901,7 @@ export default function LowiClassification() {
       </div>
 
       {activeTab === "procurement" && <PublicProcurement />}
+      {activeTab === "energy" && <EnergyDashboard />}
 
       {activeTab === "publicpolicy" && <div>
         {/* Sub-nav for Public Policy sections */}
