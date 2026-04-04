@@ -451,34 +451,58 @@ export default function LowiClassification() {
           })}
         </div>
 
-        {/* Bar chart */}
+        {/* Bar chart — based on participant choices */}
         <div style={{ background: "#fff", borderRadius: 10, padding: "16px 20px", marginBottom: 20, border: "1px solid #e5e5e0" }}>
-          <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999", marginBottom: 12 }}>Distribution</div>
-          <div style={{ display: "flex", height: 28, borderRadius: 6, overflow: "hidden", gap: 2 }}>
-            {Object.entries(categories).map(([key, cat]) => (
-              <div
-                key={key}
-                style={{
-                  width: `${(counts[key] / total) * 100}%`,
-                  background: activeCategory && activeCategory !== key ? "#e5e5e0" : cat.color,
-                  transition: "all 0.3s", display: "flex", alignItems: "center", justifyContent: "center",
-                  color: "#fff", fontSize: 10, fontWeight: 700, fontFamily: "monospace", cursor: "pointer",
-                }}
-                onClick={() => { setActiveCategory(activeCategory === key ? null : key); setActiveSector(null); }}
-                title={`${cat.label}: ${counts[key]} (${Math.round((counts[key] / total) * 100)}%)`}
-              >
-                {counts[key] > 3 ? `${Math.round((counts[key] / total) * 100)}%` : ""}
-              </div>
-            ))}
+          <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "#999", marginBottom: 12 }}>
+            {participant ? `Your Classification (${Object.values(choices).filter(Boolean).length}/${total})` : "Distribution"}
           </div>
-          <div style={{ display: "flex", gap: 16, marginTop: 8, flexWrap: "wrap" }}>
-            {Object.entries(categories).map(([key, cat]) => (
-              <div key={key} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#666" }}>
-                <div style={{ width: 10, height: 10, borderRadius: 3, background: cat.color }} />
-                {cat.label} ({counts[key]})
-              </div>
-            ))}
-          </div>
+          {(() => {
+            const choiceCounts = {};
+            Object.keys(categories).forEach((k) => { choiceCounts[k] = 0; });
+            const classified = Object.values(choices).filter(Boolean);
+            if (participant && classified.length > 0) {
+              classified.forEach((v) => { if (choiceCounts[v] !== undefined) choiceCounts[v]++; });
+            } else {
+              Object.keys(categories).forEach((k) => { choiceCounts[k] = counts[k]; });
+            }
+            const chartTotal = Object.values(choiceCounts).reduce((a, b) => a + b, 0) || 1;
+            return (
+              <>
+                <div style={{ display: "flex", height: 28, borderRadius: 6, overflow: "hidden", gap: 2 }}>
+                  {Object.entries(categories).map(([key, cat]) => (
+                    choiceCounts[key] > 0 ? (
+                      <div
+                        key={key}
+                        style={{
+                          width: `${(choiceCounts[key] / chartTotal) * 100}%`,
+                          background: activeCategory && activeCategory !== key ? "#e5e5e0" : cat.color,
+                          transition: "all 0.3s", display: "flex", alignItems: "center", justifyContent: "center",
+                          color: "#fff", fontSize: 10, fontWeight: 700, fontFamily: "monospace", cursor: "pointer",
+                        }}
+                        onClick={() => { setActiveCategory(activeCategory === key ? null : key); setActiveSector(null); }}
+                        title={`${cat.label}: ${choiceCounts[key]} (${Math.round((choiceCounts[key] / chartTotal) * 100)}%)`}
+                      >
+                        {choiceCounts[key] > 1 ? `${Math.round((choiceCounts[key] / chartTotal) * 100)}%` : ""}
+                      </div>
+                    ) : null
+                  ))}
+                  {participant && classified.length === 0 && (
+                    <div style={{ width: "100%", background: "#e5e5e0", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "#999" }}>
+                      Classify policies to see your distribution
+                    </div>
+                  )}
+                </div>
+                <div style={{ display: "flex", gap: 16, marginTop: 8, flexWrap: "wrap" }}>
+                  {Object.entries(categories).map(([key, cat]) => (
+                    <div key={key} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#666" }}>
+                      <div style={{ width: 10, height: 10, borderRadius: 3, background: cat.color }} />
+                      {cat.label} ({choiceCounts[key]})
+                    </div>
+                  ))}
+                </div>
+              </>
+            );
+          })()}
         </div>
 
         {/* Search + Sector Filter */}
