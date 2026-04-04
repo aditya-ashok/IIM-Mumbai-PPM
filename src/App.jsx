@@ -325,6 +325,164 @@ function PolicyChoice({ policyIndex, choices, onUpdate, participant }) {
   );
 }
 
+// --- Public Procurement Tab ---
+function PublicProcurement() {
+  const sectionStyle = { background: "#fff", borderRadius: 10, padding: "20px", border: "1px solid #e5e5e0", marginBottom: 16 };
+  const ruleStyle = { background: "#f8fafc", borderRadius: 8, padding: "14px 16px", border: "1px solid #e2e8f0", marginBottom: 10, borderLeft: "4px solid #1e40af" };
+
+  return (
+    <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
+      {/* Header */}
+      <div style={{ ...sectionStyle, borderLeft: "4px solid #1e40af" }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1a2e", margin: "0 0 8px" }}>
+          Public Procurement of Goods Above ₹50 Lakh
+        </h2>
+        <div style={{ fontSize: 13, color: "#666", lineHeight: 1.6 }}>
+          Conditions and procedures as per General Financial Rules (GFR), 2017 — Government of India, Ministry of Finance, Department of Expenditure
+        </div>
+      </div>
+
+      {/* GFR Overview */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Applicable GFR Rules</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 10, marginBottom: 16 }}>
+          {[
+            { rule: "Rule 149", desc: "Fundamental principles of public buying" },
+            { rule: "Rule 154", desc: "Modes of procurement" },
+            { rule: "Rule 155", desc: "Advertised Tender Enquiry" },
+            { rule: "Rule 156", desc: "Limited Tender Enquiry" },
+            { rule: "Rule 157", desc: "Single Tender Enquiry" },
+            { rule: "Rule 158", desc: "Two-Stage Bidding" },
+            { rule: "Rule 160", desc: "Bid Security (EMD)" },
+            { rule: "Rule 161", desc: "Performance Security" },
+            { rule: "Rule 166", desc: "Procurement from GeM" },
+            { rule: "Rule 170", desc: "Contract management" },
+          ].map((r, i) => (
+            <div key={i} style={{ background: "#eff6ff", borderRadius: 8, padding: "10px", textAlign: "center", border: "1px solid #bfdbfe" }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: "#1e40af" }}>{r.rule}</div>
+              <div style={{ fontSize: 10, color: "#555", marginTop: 4, lineHeight: 1.3 }}>{r.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Conditions for > 50 Lakh */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 4 }}>
+          Mandatory Conditions for Procurement of Goods Above ₹50 Lakh
+        </div>
+        <div style={{ fontSize: 12, color: "#777", marginBottom: 16 }}>As per GFR 2017, Rules 149-170</div>
+
+        <div style={ruleStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", marginBottom: 6 }}>1. Advertised Tender Enquiry (ATE) — Rule 155</div>
+          <div style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>
+            For estimated value above ₹25 lakh, Open Tender / Advertised Tender Enquiry is <strong>mandatory</strong>. The tender must be published on the Central Public Procurement Portal (CPPP) and the departmental website. For goods above ₹50 lakh, this is the default and preferred mode. Minimum bid submission period is <strong>21 days</strong> from the date of publication (can be relaxed to 14 days in emergencies with recorded reasons).
+          </div>
+        </div>
+
+        <div style={ruleStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", marginBottom: 6 }}>2. e-Procurement — Rule 159</div>
+          <div style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>
+            All Ministries/Departments must mandatorily use e-procurement for tenders above ₹10 lakh. For goods above ₹50 lakh, the entire process — publication, bid submission, opening — must be conducted through the <strong>Central Public Procurement Portal (CPPP)</strong> or <strong>Government e-Marketplace (GeM)</strong>.
+          </div>
+        </div>
+
+        <div style={ruleStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", marginBottom: 6 }}>3. Bid Security / Earnest Money Deposit (EMD) — Rule 160</div>
+          <div style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>
+            Bidders must furnish Bid Security of <strong>2% to 5%</strong> of the estimated value of the goods. For goods above ₹50 lakh, this is typically ₹1-2.5 lakh or more. Bid Security can be in the form of bank guarantee, FDR, or banker's cheque. MSEs registered with NSIC are <strong>exempt</strong> from Bid Security.
+          </div>
+        </div>
+
+        <div style={ruleStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", marginBottom: 6 }}>4. Performance Security — Rule 161</div>
+          <div style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>
+            The successful bidder must furnish Performance Security of <strong>5% to 10%</strong> of the contract value within 15 days of receipt of the order. For contracts above ₹50 lakh, this is a significant amount and is held until 60 days after contract completion.
+          </div>
+        </div>
+
+        <div style={ruleStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", marginBottom: 6 }}>5. Two-Bid System (Technical + Financial) — Rule 155(vi)</div>
+          <div style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>
+            For procurement above ₹50 lakh involving complex specifications, the <strong>two-bid system</strong> is recommended: Technical Bid (evaluated first for compliance, quality, specifications) and Financial Bid (opened only for technically qualified bidders). Evaluation criteria must be clearly stated in the tender document.
+          </div>
+        </div>
+
+        <div style={ruleStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", marginBottom: 6 }}>6. Constitution of Purchase Committee — Rule 154</div>
+          <div style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>
+            Purchases above ₹25 lakh require a duly constituted <strong>Purchase Committee</strong>. For purchases above ₹50 lakh, the committee should include a <strong>finance representative</strong>. The committee evaluates bids, negotiates (if needed — only with L1 bidder), and recommends the award.
+          </div>
+        </div>
+
+        <div style={ruleStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", marginBottom: 6 }}>7. GeM Procurement — Rule 149(i) & Rule 166</div>
+          <div style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>
+            As per <strong>Rule 149(i)</strong>, procurement of goods available on GeM is <strong>mandatory</strong> through GeM. For goods above ₹50 lakh on GeM, the buyer must use the <strong>GeM Bid/RA (Reverse Auction)</strong> functionality, not direct purchase. All GFR rules on transparency, competition, and fairness apply to GeM procurements.
+          </div>
+        </div>
+
+        <div style={ruleStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", marginBottom: 6 }}>8. Make in India / Purchase Preference — Public Procurement Order 2017</div>
+          <div style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>
+            <strong>Purchase preference of 20%</strong> to local suppliers (minimum 50% local content) under Make in India. For goods above ₹50 lakh, tenders must specify minimum local content requirements and provide purchase preference to Class-I local suppliers (50%+ local content) over Class-II (20-50%) and non-local suppliers.
+          </div>
+        </div>
+
+        <div style={ruleStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", marginBottom: 6 }}>9. MSE Preference — Rule 153(iv) & PPP-MoMSME Order</div>
+          <div style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>
+            <strong>25% of annual procurement</strong> must be from Micro and Small Enterprises (MSEs), with <strong>4% from SC/ST</strong> and <strong>3% from women-owned MSEs</strong>. MSEs quoting within L1+15% price band get purchase preference. They are also exempt from bid security and prior turnover/experience criteria.
+          </div>
+        </div>
+
+        <div style={ruleStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", marginBottom: 6 }}>10. Integrity Pact — Rule 175 & CVC Guidelines</div>
+          <div style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>
+            For procurement above ₹50 lakh (some organisations set ₹1 crore threshold), an <strong>Integrity Pact</strong> must be signed between the buyer and all bidders. An <strong>Independent External Monitor (IEM)</strong> appointed by CVC oversees the procurement process. Violations can lead to debarment, forfeiture of security, and legal action.
+          </div>
+        </div>
+      </div>
+
+      {/* Threshold Summary */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>GFR Procurement Thresholds Summary</div>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: "inherit" }}>
+            <thead>
+              <tr style={{ background: "#1e40af", color: "#fff" }}>
+                <th style={{ padding: "8px 12px", textAlign: "left" }}>Value Range</th>
+                <th style={{ padding: "8px 12px", textAlign: "left" }}>Mode of Procurement</th>
+                <th style={{ padding: "8px 12px", textAlign: "left" }}>Key Rule</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { range: "Up to ₹25,000", mode: "Direct Purchase (petty purchase)", rule: "Rule 154(i)" },
+                { range: "₹25,001 to ₹2,50,000", mode: "Purchase without quotation / PAC approval", rule: "Rule 154(ii)" },
+                { range: "₹2,50,001 to ₹25,00,000", mode: "Limited Tender Enquiry (min 3 quotations)", rule: "Rule 156" },
+                { range: "Above ₹25,00,000", mode: "Advertised / Open Tender Enquiry", rule: "Rule 155" },
+                { range: "Above ₹50,00,000", mode: "ATE + Two-Bid + Purchase Committee + e-Procurement", rule: "Rules 155, 159" },
+              ].map((r, i) => (
+                <tr key={i} style={{ background: i === 4 ? "#eff6ff" : i % 2 ? "#f8fafc" : "#fff", fontWeight: i === 4 ? 700 : 400, borderBottom: "1px solid #e5e5e0" }}>
+                  <td style={{ padding: "8px 12px" }}>{r.range}</td>
+                  <td style={{ padding: "8px 12px" }}>{r.mode}</td>
+                  <td style={{ padding: "8px 12px", color: "#1e40af", fontWeight: 600 }}>{r.rule}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{ padding: "16px 20px", background: "#f0f0ec", borderRadius: 10, fontSize: 12, color: "#777", lineHeight: 1.7 }}>
+        <strong>Source:</strong> General Financial Rules (GFR), 2017 — Government of India, Ministry of Finance, Department of Expenditure. Also: Manual for Procurement of Goods, 2017 (Ministry of Finance) and Public Procurement (Preference to Make in India) Order, 2017 (DPIIT).
+      </div>
+    </div>
+  );
+}
+
 // --- BMC Voter Survey Tab ---
 function BMCVoterSurvey() {
   const barStyle = (pct, color) => ({
@@ -650,9 +808,10 @@ export default function LowiClassification() {
       <div style={{ background: "#fff", borderBottom: "1px solid #e5e5e0" }}>
         <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", gap: 0 }}>
           {[
-            { key: "classify", label: "Policy Classification" },
+            { key: "classify", label: "Public Policy" },
             { key: "janvishwas", label: "Jan Vishwas Bill 2026" },
             { key: "bmcvoter", label: "BMC Voter Survey" },
+            { key: "procurement", label: "Public Procurement" },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -671,6 +830,7 @@ export default function LowiClassification() {
 
       {activeTab === "janvishwas" && <JanVishwasBill />}
       {activeTab === "bmcvoter" && <BMCVoterSurvey />}
+      {activeTab === "procurement" && <PublicProcurement />}
 
       {activeTab === "classify" && <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
         {/* Participant Name */}
