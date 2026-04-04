@@ -325,6 +325,199 @@ function PolicyChoice({ policyIndex, choices, onUpdate, participant }) {
   );
 }
 
+// --- BMC Voter Survey Tab ---
+function BMCVoterSurvey() {
+  const barStyle = (pct, color) => ({
+    width: `${pct}%`, background: color, height: 24, borderRadius: 4,
+    display: "flex", alignItems: "center", justifyContent: "center",
+    color: "#fff", fontSize: 10, fontWeight: 700, fontFamily: "monospace",
+    minWidth: pct > 5 ? 30 : 0, transition: "width 0.3s",
+  });
+  const sectionStyle = { background: "#fff", borderRadius: 10, padding: "20px", border: "1px solid #e5e5e0", marginBottom: 16 };
+  const labelStyle = { fontSize: 12, color: "#666", marginBottom: 4, display: "flex", justifyContent: "space-between" };
+
+  const HBar = ({ label, value, max, color }) => (
+    <div style={{ marginBottom: 8 }}>
+      <div style={labelStyle}><span>{label}</span><span style={{ fontWeight: 700 }}>{value}%</span></div>
+      <div style={{ background: "#f0f0ec", borderRadius: 4, overflow: "hidden", height: 24 }}>
+        <div style={barStyle(value / (max || 100) * 100, color)}>{value > 5 ? `${value}%` : ""}</div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
+      {/* Header */}
+      <div style={{ ...sectionStyle, borderLeft: "4px solid #0f3460" }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1a2e", margin: "0 0 8px" }}>
+          Why People Do Not Vote in Municipal Corporation Elections
+        </h2>
+        <div style={{ fontSize: 13, color: "#666", lineHeight: 1.6 }}>
+          A Voter-Based Survey in Brihanmumbai Municipal Corporation (BMC) | Gokhale Institute of Politics and Economics, Pune
+        </div>
+        <div style={{ fontSize: 12, color: "#999", marginTop: 4 }}>
+          Survey: Jan 3-12, 2017 | ~2,786 respondents | 10 wards (7 low VT + 3 high VT)
+        </div>
+      </div>
+
+      {/* Key Finding: Top 3 Reasons */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 16 }}>Top 3 Reasons for Not Voting</div>
+        <HBar label="Casting my vote has not changed anything so far" value={27} max={30} color="#dc2626" />
+        <HBar label="My name was not in the voter's list" value={25} max={30} color="#f59e0b" />
+        <HBar label="All candidates are more or less of same quality" value={25} max={30} color="#ea580c" />
+      </div>
+
+      {/* Voter Classification */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Mumbai Voter Classification</div>
+        <div style={{ display: "flex", height: 36, borderRadius: 6, overflow: "hidden", gap: 2, marginBottom: 12 }}>
+          <div style={barStyle(23.3, "#dc2626")}>Rare 23.3%</div>
+          <div style={barStyle(38.8, "#f59e0b")}>Intermittent 38.8%</div>
+          <div style={barStyle(30.5, "#16a34a")}>Regular 30.5%</div>
+        </div>
+        <div style={{ fontSize: 12, color: "#777", lineHeight: 1.6 }}>
+          Only 30.5% of Mumbaikars vote regularly. 38.8% are intermittent voters — the key target group for awareness campaigns.
+        </div>
+      </div>
+
+      {/* Gender */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+        <div style={sectionStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Male Voters</div>
+          <HBar label="Rare" value={21.9} max={50} color="#dc2626" />
+          <HBar label="Intermittent" value={36.2} max={50} color="#f59e0b" />
+          <HBar label="Regular" value={35.2} max={50} color="#16a34a" />
+        </div>
+        <div style={sectionStyle}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Female Voters</div>
+          <HBar label="Rare" value={24.6} max={50} color="#dc2626" />
+          <HBar label="Intermittent" value={41.5} max={50} color="#f59e0b" />
+          <HBar label="Regular" value={25.6} max={50} color="#16a34a" />
+        </div>
+      </div>
+
+      {/* Age */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Voting by Age Group</div>
+        {[
+          { age: "18-35 (Youth)", rare: 37.1, inter: 24.8, regular: 18.1 },
+          { age: "36-50 (Middle)", rare: 16.2, inter: 47.2, regular: 36.5 },
+          { age: "51+ (Senior)", rare: 12.9, inter: 47.2, regular: 39.8 },
+        ].map((r, i) => (
+          <div key={i} style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#333", marginBottom: 4 }}>{r.age}</div>
+            <div style={{ display: "flex", height: 24, borderRadius: 4, overflow: "hidden", gap: 2 }}>
+              <div style={barStyle(r.rare, "#dc2626")}>{r.rare}%</div>
+              <div style={barStyle(r.inter, "#f59e0b")}>{r.inter}%</div>
+              <div style={barStyle(r.regular, "#16a34a")}>{r.regular}%</div>
+            </div>
+          </div>
+        ))}
+        <div style={{ fontSize: 12, color: "#777", marginTop: 8, lineHeight: 1.5 }}>
+          Youth (18-35) are the most reluctant: 37.1% rare voters, only 18.1% regular. Seniors (51+) form the strongest voter base at 39.8% regular.
+        </div>
+      </div>
+
+      {/* Education */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Voting by Education Level</div>
+        {[
+          { ed: "Illiterate", rare: 9.9, regular: 28.4 },
+          { ed: "School (V-IX)", rare: 24.4, regular: 25.8 },
+          { ed: "SSC to HSC", rare: 23.4, regular: 24.8 },
+          { ed: "Graduate/PG (General)", rare: 33.8, regular: 25.4 },
+          { ed: "Graduate/PG (Professional)", rare: 54.2, regular: 24.0 },
+        ].map((r, i) => (
+          <div key={i} style={{ marginBottom: 8 }}>
+            <div style={labelStyle}><span>{r.ed}</span><span style={{ color: "#dc2626" }}>Rare: {r.rare}%</span></div>
+            <div style={{ display: "flex", height: 20, borderRadius: 4, overflow: "hidden", gap: 2 }}>
+              <div style={barStyle(r.rare, "#dc2626")}></div>
+              <div style={barStyle(100 - r.rare - r.regular, "#f59e0b")}></div>
+              <div style={barStyle(r.regular, "#16a34a")}></div>
+            </div>
+          </div>
+        ))}
+        <div style={{ fontSize: 12, color: "#777", marginTop: 8, lineHeight: 1.5 }}>
+          Paradoxically, higher education correlates with lower voting: 54.2% of professional degree holders are rare voters vs. only 9.9% of illiterate voters.
+        </div>
+      </div>
+
+      {/* Period of Stay */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Voting by Years of Residence in Mumbai</div>
+        {[
+          { stay: "Less than 5 years", rare: 45.0, inter: 21.3, regular: 17.5 },
+          { stay: "5-10 years", rare: 38.9, inter: 33.8, regular: 18.6 },
+          { stay: "More than 10 years", rare: 19.7, inter: 40.6, regular: 32.9 },
+        ].map((r, i) => (
+          <div key={i} style={{ marginBottom: 10 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#333", marginBottom: 4 }}>{r.stay}</div>
+            <div style={{ display: "flex", height: 24, borderRadius: 4, overflow: "hidden", gap: 2 }}>
+              <div style={barStyle(r.rare, "#dc2626")}>{r.rare}%</div>
+              <div style={barStyle(r.inter, "#f59e0b")}>{r.inter}%</div>
+              <div style={barStyle(r.regular, "#16a34a")}>{r.regular}%</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Ward Turnout */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Ward-Wise Voter Turnout (BMC 2012)</div>
+        {[
+          { ward: "Mumbadevi", pct: 30.68, type: "low" },
+          { ward: "Dharavi Transit Camp", pct: 33.18, type: "low" },
+          { ward: "Swami Samarth Nagar", pct: 32.50, type: "low" },
+          { ward: "Union Park (Bandra)", pct: 36.00, type: "low" },
+          { ward: "Anushakti Nagar", pct: 36.56, type: "low" },
+          { ward: "New Collectors Colony", pct: 38.36, type: "low" },
+          { ward: "Borivali TPS", pct: 39.27, type: "low" },
+          { ward: "Datar Colony (Mulund)", pct: 52.18, type: "high" },
+          { ward: "Gavdevi (Bhandup)", pct: 53.69, type: "high" },
+          { ward: "Bholar Ghatla Village", pct: 55.41, type: "high" },
+        ].map((w, i) => (
+          <div key={i} style={{ marginBottom: 6 }}>
+            <div style={labelStyle}>
+              <span>{w.ward} <span style={{ fontSize: 10, color: w.type === "high" ? "#16a34a" : "#dc2626", fontWeight: 700 }}>({w.type.toUpperCase()} VT)</span></span>
+              <span style={{ fontWeight: 700 }}>{w.pct}%</span>
+            </div>
+            <div style={{ background: "#f0f0ec", borderRadius: 4, overflow: "hidden", height: 18 }}>
+              <div style={{ width: `${w.pct}%`, background: w.type === "high" ? "#16a34a" : "#dc2626", height: 18, borderRadius: 4, transition: "width 0.3s" }}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Key Categories */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Key Groups with Low Voting</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
+          {[
+            { group: "Youth (18-35)", stat: "37.1% rare", icon: "👤" },
+            { group: "Females", stat: "24.6% rare", icon: "👩" },
+            { group: "High Income (SEC A)", stat: "22.1% rare", icon: "💰" },
+            { group: "Professional Graduates", stat: "54.2% rare", icon: "🎓" },
+            { group: "New Residents (<5 yrs)", stat: "45% rare", icon: "🏠" },
+            { group: "Unmarried", stat: "37.5% rare", icon: "💍" },
+          ].map((g, i) => (
+            <div key={i} style={{ background: "#fef2f2", borderRadius: 8, padding: "12px", textAlign: "center", border: "1px solid #fecaca" }}>
+              <div style={{ fontSize: 20, marginBottom: 4 }}>{g.icon}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#1a1a2e" }}>{g.group}</div>
+              <div style={{ fontSize: 11, color: "#dc2626", fontWeight: 600 }}>{g.stat}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{ padding: "16px 20px", background: "#f0f0ec", borderRadius: 10, fontSize: 12, color: "#777", lineHeight: 1.7 }}>
+        <strong>Source:</strong> "Why People Do Not Vote in Municipal Corporation Elections: A Voter-Based Survey in BMC" — Rajas K. Parchure, Manasi V. Phadke, Dnyandeo Talule, Gokhale Institute of Politics and Economics, Pune, 2017. Commissioned by State Election Commission of Maharashtra.
+      </div>
+    </div>
+  );
+}
+
 // --- Jan Vishwas Bill Tab ---
 function JanVishwasBill() {
   const sections = [
@@ -459,6 +652,7 @@ export default function LowiClassification() {
           {[
             { key: "classify", label: "Policy Classification" },
             { key: "janvishwas", label: "Jan Vishwas Bill 2026" },
+            { key: "bmcvoter", label: "BMC Voter Survey" },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -476,6 +670,7 @@ export default function LowiClassification() {
       </div>
 
       {activeTab === "janvishwas" && <JanVishwasBill />}
+      {activeTab === "bmcvoter" && <BMCVoterSurvey />}
 
       {activeTab === "classify" && <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
         {/* Participant Name */}
