@@ -778,30 +778,19 @@ export default function LowiClassification() {
   return (
     <div style={{ fontFamily: "'Georgia', 'Times New Roman', serif", background: "#fafaf8", minHeight: "100vh", padding: 0 }}>
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)", color: "#fff", padding: "32px 24px 28px" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <div style={{ fontSize: 11, letterSpacing: 3, textTransform: "uppercase", opacity: 0.6, marginBottom: 8 }}>
-            IIM Mumbai PPM — Assignment & Learning
-          </div>
-          <h1 style={{ fontSize: 26, fontWeight: 700, margin: "0 0 6px", lineHeight: 1.2 }}>
-            India's Annual Policy Review 2024-25
-          </h1>
-          <div style={{ fontSize: 14, opacity: 0.7 }}>
-            Theodore Lowi's Framework · PRS Legislative Research · {total} policies classified
-          </div>
-          {totalResponded > 0 && (
-            <div style={{ marginTop: 12, display: "flex", gap: 16, fontSize: 12, opacity: 0.8 }}>
-              <span style={{ background: "rgba(255,255,255,0.15)", padding: "4px 10px", borderRadius: 4 }}>
-                Reviewed: {totalResponded}/{total}
-              </span>
-              <span style={{ background: "rgba(22,163,74,0.3)", padding: "4px 10px", borderRadius: 4 }}>
-                Agree: {totalAgreed}
-              </span>
-              <span style={{ background: "rgba(220,38,38,0.3)", padding: "4px 10px", borderRadius: 4 }}>
-                Disagree: {totalDisagreed}
-              </span>
+      <div style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)", color: "#fff", padding: "18px 24px 14px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+          <div>
+            <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", opacity: 0.6, marginBottom: 4 }}>
+              IIM Mumbai PPM — Assignment & Learning
             </div>
-          )}
+            <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, lineHeight: 1.2 }}>
+              India's Annual Policy Review 2024-25
+            </h1>
+          </div>
+          <div style={{ fontSize: 11, opacity: 0.7 }}>
+            Theodore Lowi's Framework · {total} policies
+          </div>
         </div>
       </div>
 
