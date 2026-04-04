@@ -527,25 +527,34 @@ export default function LowiClassification() {
             const cat = categories[p.cat];
             const isExpanded = expandedPolicy === i;
             const resp = responses[`policy_${globalIndex}`];
-            const stanceBadge = resp?.stance === "agree" ? "border-left: 4px solid #16a34a" : resp?.stance === "disagree" ? "border-left: 4px solid #dc2626" : "";
+            const participantChoice = choices[`policy_${globalIndex}`] || null;
+            const choiceCat = participantChoice ? categories[participantChoice] : null;
+            const borderColor = participantChoice ? choiceCat.color : "#ccc";
             return (
               <div
                 key={i}
                 onClick={() => setExpandedPolicy(isExpanded ? null : i)}
                 style={{
                   background: "#fff",
-                  border: `1px solid ${isExpanded ? cat.border : "#e5e5e0"}`,
-                  borderLeft: `4px solid ${resp?.stance === "agree" ? "#16a34a" : resp?.stance === "disagree" ? "#dc2626" : cat.color}`,
+                  border: `1px solid ${isExpanded ? (choiceCat?.border || "#e5e5e0") : "#e5e5e0"}`,
+                  borderLeft: `4px solid ${borderColor}`,
                   borderRadius: 8, padding: "12px 16px", cursor: "pointer", transition: "all 0.15s",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
-                      <span style={{
-                        fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1,
-                        color: cat.color, background: cat.bg, padding: "2px 8px", borderRadius: 4,
-                      }}>{cat.label}</span>
+                      {participantChoice ? (
+                        <span style={{
+                          fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1,
+                          color: categories[participantChoice].color, background: categories[participantChoice].bg, padding: "2px 8px", borderRadius: 4,
+                        }}>{categories[participantChoice].icon} {categories[participantChoice].label}</span>
+                      ) : (
+                        <span style={{
+                          fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1,
+                          color: "#aaa", background: "#f0f0ec", padding: "2px 8px", borderRadius: 4,
+                        }}>Unclassified</span>
+                      )}
                       <span style={{ fontSize: 10, color: sectorColors[p.sector] || "#666", fontWeight: 600 }}>{p.sector}</span>
                       {resp?.stance && (
                         <span style={{
