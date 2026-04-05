@@ -333,6 +333,9 @@ function PLFSAnalysis() {
   const BASE = "https://raw.githubusercontent.com/aditya-ashok/IIM-Mumbai-PPM/public-policy/plfs/graphs_actual/";
 
   const graphs = [
+    { file: "22_scatter_age_income_gender.png", title: "Scatter: Age vs Income by Gender", type: "Scatter Plot",
+      desc: "For records where tothrs_wrk > 0 and total_income > 0. Each dot is a worker colored by gender (Blue=Male, Pink=Female). Shows how income varies with age — peaks in 35-50 age range, males consistently higher across all ages.",
+      code: `sub = df[(df['tothrs_wrk'] > 0) & (df['total_income'] > 0)]\ncolors = ['#2563eb' if s == 1 else '#be185d' for s in sample['sex']]\nax.scatter(sample['age'], sample['total_income'], c=colors, alpha=0.3, s=10)` },
     { file: "21_worker_age_gender_kde.png", title: "Worker Age Distribution by Gender (tothrs_wrk > 0)", type: "KDE Density Plot",
       desc: "Age distribution of only those who reported working hours > 0, split by gender. Shows the working population's age profile — peaks in prime working years (30-45).",
       code: `workers = df[(df['tothrs_wrk'] > 0) & (df['sex'].isin([1,2]))]\nworkers[workers['sex']==1]['age'].plot.kde(label='Male')\nworkers[workers['sex']==2]['age'].plot.kde(label='Female')` },
@@ -444,6 +447,7 @@ function PLFSAnalysis() {
           { file: "14_scatter_hrs_income.png", title: "Work Hours vs Income Scatter" },
           { file: "15_lfpr_marital.png", title: "LFPR by Marital Status & Gender" },
           { file: "16_work_hours.png", title: "Work Hours Distribution" },
+          { file: "22_scatter_age_income_gender.png", title: "Scatter: Age vs Income by Gender" },
           { file: "21_worker_age_gender_kde.png", title: "Worker Age Distribution (tothrs_wrk > 0)" },
         ];
         return (
