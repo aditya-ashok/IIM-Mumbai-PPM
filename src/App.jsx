@@ -332,6 +332,9 @@ function PLFSAnalysis() {
   const BASE = "https://raw.githubusercontent.com/aditya-ashok/IIM-Mumbai-PPM/public-policy/plfs/graphs_actual/";
 
   const graphs = [
+    { file: "17_age_density_kde.png", title: "Age Distribution — Kernel Density Plot by Gender", type: "KDE Density Plot",
+      desc: "Kernel Density Estimation (KDE) showing smoothed age distribution for Male, Female, and Overall. Reveals differences in age profiles — female distribution slightly younger. KDE is a non-parametric way to estimate the probability density function.",
+      code: `for sex, label, color in [(1, 'Male', '#2563eb'), (2, 'Female', '#be185d')]:\n    df[df['sex'] == sex]['age'].plot.kde(ax=ax, color=color, lw=2.5, label=label)\ndf['age'].plot.kde(ax=ax, color='#1a1a2e', lw=2, ls='--', label='Overall')` },
     { file: "01_age_distribution_hist.png", title: "Age Distribution of Survey Respondents", type: "Histogram",
       desc: "Shows the age distribution of all 1,148,634 PLFS respondents. Right-skewed distribution with median age marked. Helps identify the demographic composition of the sample.",
       code: `ax.hist(df["age"], bins=50, color="#1a1a2e", alpha=0.7, edgecolor="white", density=True)\nax.axvline(df["age"].median(), color="#dc2626", ls="--", lw=2, label=f'Median: {df["age"].median():.0f}')` },
