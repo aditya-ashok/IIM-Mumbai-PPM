@@ -403,6 +403,10 @@ function PLFSAnalysis() {
         <div style={{ fontSize: 12, color: "#999", marginTop: 4 }}>
           Source: microdata.gov.in/NADA | Click any graph to see the Python code used
         </div>
+        <a href="https://colab.research.google.com/github/aditya-ashok/IIM-Mumbai-PPM/blob/public-policy/plfs/PLFS_EDA_Colab.ipynb" target="_blank" rel="noopener noreferrer"
+          style={{ display: "inline-block", marginTop: 12, padding: "8px 18px", background: "#f59e0b", color: "#1a1a2e", borderRadius: 6, fontSize: 12, fontWeight: 700, textDecoration: "none", fontFamily: "inherit" }}>
+          Open in Google Colab
+        </a>
       </div>
 
       {/* Key Findings */}
