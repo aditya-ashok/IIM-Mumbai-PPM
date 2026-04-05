@@ -396,6 +396,51 @@ function PLFSAnalysis() {
         </div>
       </div>
 
+      {/* Key Findings */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Key Findings from 1.1M Records</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
+          {[
+            { title: "Median Earnings", stat: "Rs 14,500/mo", detail: "Mean Rs 18,620 — right-skewed, few high earners pull mean up", color: "#2563eb" },
+            { title: "Male vs Female LFPR", stat: "16.7% vs 13.9%", detail: "Gender gap persists; female LFPR rising from 23.3% (2017-18)", color: "#be185d" },
+            { title: "Youth UR Highest", stat: "18-24 age", detail: "Highest unemployment rate; drops sharply after age 30", color: "#dc2626" },
+            { title: "Education Paradox", stat: "Graduates > Illiterate", detail: "Professional graduates have HIGHEST UR; skills mismatch", color: "#7c3aed" },
+            { title: "Gender Wage Gap", stat: "Significant", detail: "Male median earnings far exceed female — visible in box plots", color: "#f59e0b" },
+            { title: "State Disparities", stat: "Wide variation", detail: "LFPR ranges widely across states; some below 50%", color: "#059669" },
+          ].map((c, i) => (
+            <div key={i} style={{ background: "#f8fafc", borderRadius: 8, padding: "14px", border: "1px solid #e2e8f0", borderLeft: `4px solid ${c.color}` }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: c.color, textTransform: "uppercase", letterSpacing: 0.5 }}>{c.title}</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#1a1a2e", margin: "4px 0" }}>{c.stat}</div>
+              <div style={{ fontSize: 11, color: "#777", lineHeight: 1.4 }}>{c.detail}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* What You Can Do */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>What You Can Do With This Data (PPM Assignment Ideas)</div>
+        {[
+          { num: "1", title: "Policy Recommendations for Youth Employment", detail: "Use age-wise UR data to design targeted youth employment programs. Link to Lowi's distributive framework — subsidies, skill schemes, internship policies." },
+          { num: "2", title: "Gender Policy Analysis", detail: "Why does female LFPR lag? Connect to redistributive policies (maternity benefits, childcare). Cross-tab LFPR with marital status shows married women's participation drops — policy implications for childcare infrastructure." },
+          { num: "3", title: "State Comparison Study", detail: "Pick 2-3 states with different LFPR levels (high vs low). Analyze what regulatory/distributive policies drive the difference — agricultural subsidies, industrial corridors, skill programs." },
+          { num: "4", title: "Wage Inequality Quantification", detail: "Use the earnings histogram and box plots to quantify gender and education wage gaps. Calculate Gini coefficient. Link to redistributive policies like minimum wage, UPS." },
+          { num: "5", title: "Education-Employment Mismatch", detail: "The education paradox (higher education = higher UR) points to curriculum-industry gap. Connect to regulatory policies — UGC reforms, NEP 2020, skill development schemes in the Lowi classification tab." },
+          { num: "6", title: "Sectoral Shift Analysis", detail: "Agriculture still employs ~46% of workers. Analyze the pace of structural transformation. Link to distributive policies (MSP, PMGSY) that may be keeping workers in agriculture." },
+          { num: "7", title: "Cross-Tab with Other Tabs", detail: "Connect PLFS findings to Jan Vishwas Bill (ease of doing business -> formal employment), BMC voter survey (economic status -> voting behavior), and Public Procurement (government spending -> job creation)." },
+        ].map((item, i) => (
+          <div key={i} style={{ display: "flex", gap: 14, marginBottom: 14, padding: "12px 16px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
+            <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#2563eb", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, flexShrink: 0 }}>{item.num}</div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 4 }}>{item.title}</div>
+              <div style={{ fontSize: 12, color: "#555", lineHeight: 1.6 }}>{item.detail}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Exploratory Graphs (16 visualizations from actual data)</div>
+
       {graphs.map((g, i) => (
         <div key={i} style={sectionStyle}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
