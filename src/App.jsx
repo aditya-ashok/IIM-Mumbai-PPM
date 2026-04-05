@@ -328,6 +328,7 @@ function PolicyChoice({ policyIndex, choices, onUpdate, participant }) {
 // --- PLFS Exploratory Data Analysis Tab ---
 function PLFSAnalysis() {
   const [showCode, setShowCode] = useState(null);
+  const [plfsView, setPlfsView] = useState("full");
   const sectionStyle = { background: "#fff", borderRadius: 10, padding: "20px", border: "1px solid #e5e5e0", marginBottom: 20 };
   const BASE = "https://raw.githubusercontent.com/aditya-ashok/IIM-Mumbai-PPM/public-policy/plfs/graphs_actual/";
 
@@ -406,12 +407,88 @@ function PLFSAnalysis() {
         <div style={{ fontSize: 12, color: "#999", marginTop: 4 }}>
           Source: microdata.gov.in/NADA | Click any graph to see the Python code used
         </div>
-        <a href="https://colab.research.google.com/github/aditya-ashok/IIM-Mumbai-PPM/blob/public-policy/plfs/PLFS_EDA_Colab.ipynb" target="_blank" rel="noopener noreferrer"
-          style={{ display: "inline-block", marginTop: 12, padding: "8px 18px", background: "#f59e0b", color: "#1a1a2e", borderRadius: 6, fontSize: 12, fontWeight: 700, textDecoration: "none", fontFamily: "inherit" }}>
-          Open in Google Colab
-        </a>
+        <div style={{ display: "flex", gap: 10, marginTop: 12, flexWrap: "wrap" }}>
+          <a href="https://colab.research.google.com/github/aditya-ashok/IIM-Mumbai-PPM/blob/public-policy/plfs/PLFS_EDA_Colab.ipynb" target="_blank" rel="noopener noreferrer"
+            style={{ padding: "8px 18px", background: "#f59e0b", color: "#1a1a2e", borderRadius: 6, fontSize: 12, fontWeight: 700, textDecoration: "none", fontFamily: "inherit" }}>
+            Open in Google Colab
+          </a>
+          <button onClick={() => setPlfsView("full")} style={{ padding: "8px 18px", background: plfsView === "full" ? "#2563eb" : "#f8fafc", color: plfsView === "full" ? "#fff" : "#555", border: "1px solid #d5d5d0", borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+            Full Data (1.1M)
+          </button>
+          <button onClick={() => setPlfsView("sample")} style={{ padding: "8px 18px", background: plfsView === "sample" ? "#2563eb" : "#f8fafc", color: plfsView === "sample" ? "#fff" : "#555", border: "1px solid #d5d5d0", borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+            Sample CSV (100K)
+          </button>
+        </div>
       </div>
 
+      {plfsView === "sample" && (
+        <div>
+          <div style={sectionStyle}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 8 }}>Sample Data: PLFS_selected_sample.csv</div>
+            <div style={{ fontSize: 12, color: "#777", marginBottom: 14 }}>99,994 records (after filtering Male/Female) | 22 columns including derived total_income</div>
+
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 10 }}>Descriptive Statistics — Age</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: 8, marginBottom: 16 }}>
+              {[
+                { l: "Count", v: "99,994" }, { l: "Mean", v: "31.7" }, { l: "Median", v: "29" },
+                { l: "Std Dev", v: "19.9" }, { l: "Min", v: "0" }, { l: "Max", v: "117" },
+                { l: "Q1", v: "16" }, { l: "Q3", v: "46" }, { l: "IQR", v: "30" },
+              ].map((s, i) => (
+                <div key={i} style={{ background: "#f8fafc", borderRadius: 6, padding: "8px", textAlign: "center", border: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: 9, color: "#999", fontWeight: 600, textTransform: "uppercase" }}>{s.l}</div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#1a1a2e" }}>{s.v}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 10 }}>Income Statistics</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: 8, marginBottom: 16 }}>
+              {[
+                { l: "Earners", v: "27,285" }, { l: "Median", v: "Rs 14,250" }, { l: "Mean", v: "Rs 18,738" },
+              ].map((s, i) => (
+                <div key={i} style={{ background: "#f8fafc", borderRadius: 6, padding: "8px", textAlign: "center", border: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: 9, color: "#999", fontWeight: 600, textTransform: "uppercase" }}>{s.l}</div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#1a1a2e" }}>{s.v}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 10 }}>SAS Frequency Distribution</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+              <thead><tr style={{ background: "#1a1a2e", color: "#fff" }}>
+                <th style={{ padding: "6px 10px", textAlign: "left" }}>Code</th>
+                <th style={{ padding: "6px 10px", textAlign: "left" }}>Category</th>
+                <th style={{ padding: "6px 10px", textAlign: "right" }}>Count</th>
+                <th style={{ padding: "6px 10px", textAlign: "right" }}>%</th>
+              </tr></thead>
+              <tbody>
+                {[
+                  { c: "21", cat: "Helper in HH enterprise", count: "3,733", pct: "3.7%" },
+                  { c: "11", cat: "Self-employed (own account)", count: "3,254", pct: "3.3%" },
+                  { c: "51", cat: "Casual labour (other)", count: "1,811", pct: "1.8%" },
+                  { c: "41", cat: "Casual labour (public)", count: "811", pct: "0.8%" },
+                  { c: "31", cat: "Regular wage/salaried", count: "258", pct: "0.3%" },
+                  { c: "12", cat: "Self-employed (employer)", count: "186", pct: "0.2%" },
+                  { c: "NaN", cat: "Missing / Not in LF", count: "89,941", pct: "89.9%" },
+                ].map((r, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid #e5e5e0", background: r.c === "NaN" ? "#fef2f2" : i % 2 ? "#f8fafc" : "#fff" }}>
+                    <td style={{ padding: "6px 10px", fontFamily: "monospace", fontWeight: 700 }}>{r.c}</td>
+                    <td style={{ padding: "6px 10px" }}>{r.cat}</td>
+                    <td style={{ padding: "6px 10px", textAlign: "right", fontWeight: 600 }}>{r.count}</td>
+                    <td style={{ padding: "6px 10px", textAlign: "right" }}>{r.pct}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div style={{ marginTop: 16, fontSize: 11, color: "#777", lineHeight: 1.5 }}>
+              Sample file produces consistent percentages with full data — same rank order and proportions. Use sample for quick analysis; full data for precise estimates.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {plfsView === "full" && <div>
       {/* Key Findings */}
       <div style={sectionStyle}>
         <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Key Findings from 1.1M Records</div>
@@ -686,6 +763,7 @@ function PLFSAnalysis() {
         <strong>Source:</strong> PLFS Microdata from microdata.gov.in/NADA | 1,148,634 records analyzed
         <br /><strong>Tools:</strong> Python 3, NumPy, Pandas, Matplotlib | Full script: <code>plfs/plfs_eda_actual.py</code>
       </div>
+      </div>}
     </div>
   );
 }
