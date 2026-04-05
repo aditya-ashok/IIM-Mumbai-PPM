@@ -333,6 +333,9 @@ function PLFSAnalysis() {
   const BASE = "https://raw.githubusercontent.com/aditya-ashok/IIM-Mumbai-PPM/public-policy/plfs/graphs_actual/";
 
   const graphs = [
+    { file: "24_ratio_income_hrs_by_tedu_gender.png", title: "Income/Hours Ratio by Technical Education & Gender (tedu_lvl>1)", type: "Scatter + Line",
+      desc: "For workers with hrs>0, income>0, tedu_lvl>1: aggregated total_income/(tothrs_wrk*4) ratio by tedu_lvl for Male (blue dots) vs Female (red X). Shows hourly earning efficiency across technical education levels.",
+      code: `sub = df[(df['tothrs_wrk']>0) & (df['total_income']>0) & (df['tedu_lvl']>1)]\nagg = sub.groupby(['tedu_lvl','sex']).agg(total_income_sum=('total_income','sum'), tothrs_wrk_sum=('tothrs_wrk','sum'))\nagg['ratio'] = agg['total_income_sum'] / (agg['tothrs_wrk_sum'] * 4)\nax.scatter(male['tedu_lvl'], male['ratio'], c='blue', marker='o', label='Male')\nax.scatter(female['tedu_lvl'], female['ratio'], c='red', marker='x', label='Female')` },
     { file: "23_ratio_income_hrs_by_edu_gender.png", title: "Income/Hours Ratio by Education & Gender (tedu_lvl=1)", type: "Scatter + Line",
       desc: "For workers with hrs>0, income>0, tedu_lvl=1: aggregated total_income/tothrs_wrk ratio by gedu_lvl for Male vs Female. Shows earning efficiency rises with education — PG Tech males earn Rs 818/hr vs females Rs 736/hr. Gender gap persists at every education level.",
       code: `sub = df[(df['tothrs_wrk']>0) & (df['total_income']>0) & (df['tedu_lvl']==1)]\nagg = sub.groupby(['gedu_lvl','sex']).agg(total_income_sum=('total_income','sum'), tothrs_wrk_sum=('tothrs_wrk','sum'))\nagg['ratio'] = agg['total_income_sum'] / agg['tothrs_wrk_sum']\nax.scatter(male['gedu_lvl'], male['ratio'], c='#2a9d8f', label='Male')\nax.scatter(female['gedu_lvl'], female['ratio'], c='#e76f51', label='Female')` },
@@ -450,6 +453,7 @@ function PLFSAnalysis() {
           { file: "14_scatter_hrs_income.png", title: "Work Hours vs Income Scatter" },
           { file: "15_lfpr_marital.png", title: "LFPR by Marital Status & Gender" },
           { file: "16_work_hours.png", title: "Work Hours Distribution" },
+          { file: "24_ratio_income_hrs_by_tedu_gender.png", title: "Income/Hours Ratio by Tech Education & Gender (tedu_lvl>1)" },
           { file: "23_ratio_income_hrs_by_edu_gender.png", title: "Income/Hours Ratio by Education & Gender" },
           { file: "22_scatter_age_income_gender.png", title: "Scatter: Age vs Income by Gender" },
           { file: "21_worker_age_gender_kde.png", title: "Worker Age Distribution (tothrs_wrk > 0)" },
