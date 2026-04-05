@@ -464,6 +464,44 @@ function PLFSAnalysis() {
                 ))}
               </div>
             </div>
+            {/* Avg Income by Gender — Sample */}
+            <div style={sectionStyle}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 4 }}>Average Total Income by Gender</div>
+              <div style={{ fontSize: 12, color: "#777", marginBottom: 14 }}>Filter: tothrs_wrk &gt; 0 AND total_income &gt; 0 | 26,973 records</div>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                <thead><tr style={{ background: "#1a1a2e", color: "#fff" }}>
+                  <th style={{ padding: "8px 12px", textAlign: "left" }}>Gender</th>
+                  <th style={{ padding: "8px 12px", textAlign: "right" }}>Mean Income</th>
+                  <th style={{ padding: "8px 12px", textAlign: "right" }}>Median Income</th>
+                  <th style={{ padding: "8px 12px", textAlign: "right" }}>Count</th>
+                </tr></thead>
+                <tbody>
+                  <tr style={{ borderBottom: "1px solid #e5e5e0" }}>
+                    <td style={{ padding: "8px 12px", fontWeight: 600, color: "#2563eb" }}>Male (1)</td>
+                    <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: 700 }}>Rs 21,186</td>
+                    <td style={{ padding: "8px 12px", textAlign: "right" }}>Rs 15,500</td>
+                    <td style={{ padding: "8px 12px", textAlign: "right" }}>20,053</td>
+                  </tr>
+                  <tr style={{ background: "#f8fafc" }}>
+                    <td style={{ padding: "8px 12px", fontWeight: 600, color: "#be185d" }}>Female (2)</td>
+                    <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: 700 }}>Rs 11,492</td>
+                    <td style={{ padding: "8px 12px", textAlign: "right" }}>Rs 6,700</td>
+                    <td style={{ padding: "8px 12px", textAlign: "right" }}>6,920</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 14 }}>
+                <div style={{ background: "#fef2f2", borderRadius: 8, padding: "14px", border: "1px solid #fecaca", textAlign: "center" }}>
+                  <div style={{ fontSize: 10, color: "#dc2626", fontWeight: 700, textTransform: "uppercase" }}>Gender Gap (Mean)</div>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: "#dc2626" }}>45.8%</div>
+                </div>
+                <div style={{ background: "#fef2f2", borderRadius: 8, padding: "14px", border: "1px solid #fecaca", textAlign: "center" }}>
+                  <div style={{ fontSize: 10, color: "#dc2626", fontWeight: 700, textTransform: "uppercase" }}>Gender Gap (Median)</div>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: "#dc2626" }}>56.8%</div>
+                </div>
+              </div>
+            </div>
+
             {sGraphs.map((g, i) => (
               <div key={i} style={sectionStyle}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 10 }}>
