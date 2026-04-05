@@ -417,26 +417,84 @@ function PLFSAnalysis() {
         </div>
       </div>
 
-      {/* What You Can Do */}
+      {/* Gender Analysis */}
       <div style={sectionStyle}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>What You Can Do With This Data (PPM Assignment Ideas)</div>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Gender Analysis</div>
+        <div style={{ fontSize: 13, color: "#555", lineHeight: 1.7, marginBottom: 16 }}>
+          The PLFS dataset codes gender as: <strong>1 = Male</strong>, <strong>2 = Female</strong>, <strong>3 = Transgender</strong>. Out of 1,148,634 respondents, approximately 50.2% are Male and 49.8% Female with a small Transgender representation.
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 16 }}>
+          <div style={{ background: "#eff6ff", borderRadius: 8, padding: "16px", border: "1px solid #bfdbfe" }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#2563eb", marginBottom: 6 }}>Male (sex = 1)</div>
+            <div style={{ fontSize: 11, color: "#444", lineHeight: 1.6 }}>
+              LFPR: 16.7% | Higher earnings (median) | More in regular wage & casual labour | Dominate construction, transport sectors | Higher UR at 17.4%
+            </div>
+          </div>
+          <div style={{ background: "#fdf2f8", borderRadius: 8, padding: "16px", border: "1px solid #f9a8d4" }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#be185d", marginBottom: 6 }}>Female (sex = 2)</div>
+            <div style={{ fontSize: 11, color: "#444", lineHeight: 1.6 }}>
+              LFPR: 13.9% | Lower median earnings | More as helpers in HH enterprise | Concentrated in agriculture | UR at 11.7% | LFPR drops sharply after marriage
+            </div>
+          </div>
+        </div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 8 }}>Gender Gaps Observed</div>
         {[
-          { num: "1", title: "Policy Recommendations for Youth Employment", detail: "Use age-wise UR data to design targeted youth employment programs. Link to Lowi's distributive framework — subsidies, skill schemes, internship policies." },
-          { num: "2", title: "Gender Policy Analysis", detail: "Why does female LFPR lag? Connect to redistributive policies (maternity benefits, childcare). Cross-tab LFPR with marital status shows married women's participation drops — policy implications for childcare infrastructure." },
-          { num: "3", title: "State Comparison Study", detail: "Pick 2-3 states with different LFPR levels (high vs low). Analyze what regulatory/distributive policies drive the difference — agricultural subsidies, industrial corridors, skill programs." },
-          { num: "4", title: "Wage Inequality Quantification", detail: "Use the earnings histogram and box plots to quantify gender and education wage gaps. Calculate Gini coefficient. Link to redistributive policies like minimum wage, UPS." },
-          { num: "5", title: "Education-Employment Mismatch", detail: "The education paradox (higher education = higher UR) points to curriculum-industry gap. Connect to regulatory policies — UGC reforms, NEP 2020, skill development schemes in the Lowi classification tab." },
-          { num: "6", title: "Sectoral Shift Analysis", detail: "Agriculture still employs ~46% of workers. Analyze the pace of structural transformation. Link to distributive policies (MSP, PMGSY) that may be keeping workers in agriculture." },
-          { num: "7", title: "Cross-Tab with Other Tabs", detail: "Connect PLFS findings to Jan Vishwas Bill (ease of doing business -> formal employment), BMC voter survey (economic status -> voting behavior), and Public Procurement (government spending -> job creation)." },
-        ].map((item, i) => (
-          <div key={i} style={{ display: "flex", gap: 14, marginBottom: 14, padding: "12px 16px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
-            <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#2563eb", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, flexShrink: 0 }}>{item.num}</div>
+          { gap: "LFPR Gap", detail: "Male 16.7% vs Female 13.9% — ~2.8 percentage points. Gap widens in urban areas.", color: "#2563eb" },
+          { gap: "Earnings Gap", detail: "Male median earnings significantly higher than female. Visible in box plot (Graph 12). Gap persists across education levels.", color: "#f59e0b" },
+          { gap: "Employment Type Gap", detail: "Women disproportionately in 'helper in HH enterprise' (unpaid family work). Men dominate 'regular wage/salaried' and 'casual labour'.", color: "#be185d" },
+          { gap: "Marital Status Effect", detail: "Married women show lower LFPR than unmarried women. Married men show HIGHER LFPR. Marriage pushes women out of workforce and men into it.", color: "#7c3aed" },
+          { gap: "Work Hours Gap", detail: "Women who work tend to work fewer paid hours, but total work (paid + unpaid domestic) is often higher. Undercounting of women's economic contribution.", color: "#059669" },
+        ].map((g, i) => (
+          <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10, padding: "10px 14px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0", borderLeft: `4px solid ${g.color}` }}>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 4 }}>{item.title}</div>
-              <div style={{ fontSize: 12, color: "#555", lineHeight: 1.6 }}>{item.detail}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: g.color }}>{g.gap}</div>
+              <div style={{ fontSize: 11, color: "#555", lineHeight: 1.5 }}>{g.detail}</div>
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Data Description */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Data Description (21 Variables)</div>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, fontFamily: "inherit" }}>
+            <thead><tr style={{ background: "#1a1a2e", color: "#fff" }}>
+              <th style={{ padding: "8px 10px", textAlign: "left" }}>Variable</th>
+              <th style={{ padding: "8px 10px", textAlign: "left" }}>Description</th>
+              <th style={{ padding: "8px 10px", textAlign: "left" }}>Values</th>
+            </tr></thead>
+            <tbody>{[
+              { v: "st", d: "State code", val: "1-37 (mapped to state names)" },
+              { v: "sex", d: "Gender", val: "1=Male, 2=Female, 3=Transgender" },
+              { v: "age", d: "Age in years", val: "0-99" },
+              { v: "marst", d: "Marital status", val: "1=Never married, 2=Currently married, 3=Widowed, 4=Divorced/Separated" },
+              { v: "gedu_lvl", d: "General education level", val: "1=Not literate to 13=PG Technical" },
+              { v: "tedu_lvl", d: "Technical education level", val: "1-16" },
+              { v: "curr_att", d: "Current attendance in education", val: "Various codes" },
+              { v: "sas", d: "Status of activity (employment type)", val: "11=Self-emp (own), 12=Self-emp (employer), 21=HH helper, 31=Regular wage, 41=Casual (public), 51=Casual (other)" },
+              { v: "ind_sas", d: "Industry code (NIC)", val: "5-digit NIC codes" },
+              { v: "ocu_sas", d: "Occupation code (NCO)", val: "3-digit NCO codes" },
+              { v: "wrk_365", d: "Worked in last 365 days", val: "1=Yes, 2=No" },
+              { v: "evr_wrk", d: "Ever worked", val: "1=Yes, 2=No" },
+              { v: "ern_reg", d: "Regular wage/salary earnings (Rs/month)", val: "0 to high values" },
+              { v: "ern_self", d: "Self-employment earnings (Rs/month)", val: "0 to high values" },
+              { v: "tothrs_wrk", d: "Total hours worked per week", val: "0-98" },
+              { v: "totadl_wrk", d: "Total adult workers in HH", val: "0+" },
+              { v: "dur_unp", d: "Duration of unemployment", val: "1-5 (duration brackets)" },
+              { v: "eff_pas", d: "Efforts for seeking/available for work", val: "1-7" },
+              { v: "voc", d: "Vocational training received", val: "1-6" },
+              { v: "voc_fld", d: "Field of vocational training", val: "Various codes" },
+              { v: "voc_typ", d: "Type of vocational training", val: "1=Formal, 2=Non-formal, 3=Both" },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: "1px solid #e5e5e0", background: i % 2 ? "#f8fafc" : "#fff" }}>
+                <td style={{ padding: "6px 10px", fontWeight: 600, fontFamily: "monospace", color: "#2563eb" }}>{r.v}</td>
+                <td style={{ padding: "6px 10px" }}>{r.d}</td>
+                <td style={{ padding: "6px 10px", fontSize: 10, color: "#777" }}>{r.val}</td>
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
       </div>
 
       <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Exploratory Graphs (16 visualizations from actual data)</div>
