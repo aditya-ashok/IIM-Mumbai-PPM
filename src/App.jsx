@@ -482,7 +482,7 @@ function PLFSAnalysis() {
       <div style={sectionStyle}>
         <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Gender Analysis</div>
         <div style={{ fontSize: 13, color: "#555", lineHeight: 1.7, marginBottom: 16 }}>
-          The PLFS dataset codes gender as: <strong>1 = Male</strong>, <strong>2 = Female</strong>, <strong>3 = Transgender</strong>. Out of 1,148,634 respondents, approximately 50.2% are Male and 49.8% Female with a small Transgender representation.
+          The PLFS dataset codes gender as: <strong>1 = Male</strong>, <strong>2 = Female</strong>. Out of 1,148,634 respondents, approximately 50.2% are Male and 49.8% Female.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 16 }}>
           <div style={{ background: "#eff6ff", borderRadius: 8, padding: "16px", border: "1px solid #bfdbfe" }}>
@@ -527,7 +527,7 @@ function PLFSAnalysis() {
             </tr></thead>
             <tbody>{[
               { v: "st", d: "State code", val: "1-37 (mapped to state names)" },
-              { v: "sex", d: "Gender", val: "1=Male, 2=Female, 3=Transgender" },
+              { v: "sex", d: "Gender", val: "1=Male, 2=Female" },
               { v: "age", d: "Age in years", val: "0-99" },
               { v: "marst", d: "Marital status", val: "1=Never married, 2=Currently married, 3=Widowed, 4=Divorced/Separated" },
               { v: "gedu_lvl", d: "General education level", val: "1=Not literate to 13=PG Technical" },
@@ -547,6 +547,7 @@ function PLFSAnalysis() {
               { v: "voc", d: "Vocational training received", val: "1-6" },
               { v: "voc_fld", d: "Field of vocational training", val: "Various codes" },
               { v: "voc_typ", d: "Type of vocational training", val: "1=Formal, 2=Non-formal, 3=Both" },
+              { v: "total_income", d: "Total income (ern_reg + ern_self)", val: "Derived column — sum of regular wages and self-employment earnings" },
             ].map((r, i) => (
               <tr key={i} style={{ borderBottom: "1px solid #e5e5e0", background: i % 2 ? "#f8fafc" : "#fff" }}>
                 <td style={{ padding: "6px 10px", fontWeight: 600, fontFamily: "monospace", color: "#2563eb" }}>{r.v}</td>

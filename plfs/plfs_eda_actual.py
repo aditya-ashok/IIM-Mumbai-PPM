@@ -19,7 +19,7 @@ df = pd.read_csv(DATA)
 print(f"Loaded: {df.shape[0]:,} rows x {df.shape[1]} columns\n")
 
 # --- Code mappings ---
-SEX_MAP = {1: "Male", 2: "Female", 3: "Transgender"}
+SEX_MAP = {1: "Male", 2: "Female"}
 MARST_MAP = {1: "Never Married", 2: "Currently Married", 3: "Widowed", 4: "Divorced/Separated"}
 EDU_MAP = {1: "Not literate", 2: "Literate (no school)", 3: "Below Primary", 4: "Primary",
            5: "Middle", 6: "Secondary", 7: "Higher Secondary", 8: "Diploma", 10: "Graduate",
@@ -37,7 +37,11 @@ STATE_MAP = {1: "J&K", 2: "HP", 3: "Punjab", 4: "Chandigarh", 5: "Uttarakhand",
              32: "Kerala", 33: "TN", 34: "Puducherry", 35: "A&N",
              36: "Telangana", 37: "Ladakh"}
 
+# Filter to Male and Female only
+df = df[df["sex"].isin([1, 2])].copy()
 df["sex_label"] = df["sex"].map(SEX_MAP)
+# Add total_income column
+df["total_income"] = df["ern_reg"] + df["ern_self"]
 df["marst_label"] = df["marst"].map(MARST_MAP)
 df["edu_label"] = df["gedu_lvl"].map(EDU_MAP)
 df["sas_label"] = df["sas"].map(SAS_MAP)
