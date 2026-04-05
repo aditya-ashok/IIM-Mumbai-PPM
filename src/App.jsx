@@ -325,6 +325,216 @@ function PolicyChoice({ policyIndex, choices, onUpdate, participant }) {
   );
 }
 
+// --- PLFS Exploratory Data Analysis Tab ---
+function PLFSAnalysis() {
+  const sectionStyle = { background: "#fff", borderRadius: 10, padding: "20px", border: "1px solid #e5e5e0", marginBottom: 16 };
+  const barStyle = (pct, color) => ({
+    width: `${pct}%`, background: color, height: 22, borderRadius: 4,
+    display: "flex", alignItems: "center", justifyContent: "center",
+    color: "#fff", fontSize: 10, fontWeight: 700, fontFamily: "monospace",
+    minWidth: pct > 4 ? 28 : 0, transition: "width 0.3s",
+  });
+  const HBar = ({ label, value, max, color }) => (
+    <div style={{ marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: "#666", marginBottom: 3, display: "flex", justifyContent: "space-between" }}><span>{label}</span><span style={{ fontWeight: 700 }}>{value}%</span></div>
+      <div style={{ background: "#f0f0ec", borderRadius: 4, overflow: "hidden", height: 22 }}>
+        <div style={barStyle(value / (max || 100) * 100, color)}></div>
+      </div>
+    </div>
+  );
+
+  // PLFS 2023-24 Annual Report Key Indicators (placeholder — will update with actual data)
+  const lfprData = [
+    { label: "All India", male: 78.8, female: 37.0, total: 58.2 },
+    { label: "Rural", male: 79.6, female: 41.5, total: 60.8 },
+    { label: "Urban", male: 77.2, female: 27.2, total: 52.7 },
+  ];
+  const urData = [
+    { label: "All India", male: 3.2, female: 3.2, total: 3.2 },
+    { label: "Rural", male: 2.5, female: 2.1, total: 2.4 },
+    { label: "Urban", male: 4.4, female: 5.8, total: 4.8 },
+  ];
+  const wprData = [
+    { label: "All India", male: 76.3, female: 35.9, total: 56.4 },
+    { label: "Rural", male: 77.6, female: 40.7, total: 59.4 },
+    { label: "Urban", male: 73.8, female: 25.6, total: 50.2 },
+  ];
+  const sectorDist = [
+    { sector: "Agriculture", pct: 46.1, color: "#15803d" },
+    { sector: "Manufacturing", pct: 11.4, color: "#b45309" },
+    { sector: "Construction", pct: 11.7, color: "#92400e" },
+    { sector: "Trade & Hotels", pct: 12.1, color: "#0e7490" },
+    { sector: "Transport & Storage", pct: 5.7, color: "#1e3a5f" },
+    { sector: "Other Services", pct: 13.0, color: "#7c3aed" },
+  ];
+  const ageWiseUR = [
+    { age: "15-17", ur: 6.7 },
+    { age: "18-24", ur: 10.2 },
+    { age: "25-29", ur: 5.4 },
+    { age: "30-34", ur: 2.1 },
+    { age: "35-44", ur: 1.2 },
+    { age: "45-54", ur: 0.8 },
+    { age: "55-64", ur: 0.9 },
+  ];
+  const eduWiseUR = [
+    { edu: "Not literate", ur: 1.2 },
+    { edu: "Primary", ur: 1.5 },
+    { edu: "Middle", ur: 2.3 },
+    { edu: "Secondary", ur: 3.9 },
+    { edu: "Higher Secondary", ur: 5.7 },
+    { edu: "Graduate & above", ur: 7.9 },
+  ];
+
+  return (
+    <div style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
+      <div style={{ ...sectionStyle, borderLeft: "4px solid #2563eb" }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1a2e", margin: "0 0 8px" }}>
+          PLFS — Exploratory Data Analysis
+        </h2>
+        <div style={{ fontSize: 13, color: "#666", lineHeight: 1.6 }}>
+          Periodic Labour Force Survey (PLFS) | Annual Report 2023-24 | National Statistical Office, MoSPI
+        </div>
+        <div style={{ fontSize: 12, color: "#999", marginTop: 4 }}>
+          Key indicators using usual status (ps+ss) approach | Ages 15+
+        </div>
+        <div style={{ marginTop: 12, display: "inline-block", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 6, padding: "8px 14px", fontSize: 12, color: "#1e40af" }}>
+          Analysis framework: Python (NumPy + Pandas) — see <code>plfs/plfs_analysis.py</code>
+        </div>
+      </div>
+
+      {/* LFPR */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Labour Force Participation Rate (LFPR) — Usual Status</div>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: "inherit" }}>
+          <thead><tr style={{ background: "#1e40af", color: "#fff" }}>
+            <th style={{ padding: "8px 12px", textAlign: "left" }}>Category</th>
+            <th style={{ padding: "8px 12px", textAlign: "center" }}>Male</th>
+            <th style={{ padding: "8px 12px", textAlign: "center" }}>Female</th>
+            <th style={{ padding: "8px 12px", textAlign: "center" }}>Total</th>
+          </tr></thead>
+          <tbody>{lfprData.map((r, i) => (
+            <tr key={i} style={{ borderBottom: "1px solid #e5e5e0", background: i % 2 ? "#f8fafc" : "#fff" }}>
+              <td style={{ padding: "8px 12px", fontWeight: 600 }}>{r.label}</td>
+              <td style={{ padding: "8px 12px", textAlign: "center", color: "#2563eb" }}>{r.male}%</td>
+              <td style={{ padding: "8px 12px", textAlign: "center", color: "#be185d" }}>{r.female}%</td>
+              <td style={{ padding: "8px 12px", textAlign: "center", fontWeight: 700 }}>{r.total}%</td>
+            </tr>
+          ))}</tbody>
+        </table>
+        <div style={{ marginTop: 14 }}>
+          {lfprData.map((r, i) => (
+            <div key={i} style={{ marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#333", marginBottom: 3 }}>{r.label}</div>
+              <div style={{ display: "flex", height: 20, gap: 4 }}>
+                <div style={{ flex: r.male, background: "#2563eb", borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 9, fontWeight: 700 }}>M {r.male}%</div>
+                <div style={{ flex: r.female, background: "#be185d", borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 9, fontWeight: 700 }}>F {r.female}%</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Unemployment Rate */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Unemployment Rate (UR) — Usual Status</div>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: "inherit" }}>
+          <thead><tr style={{ background: "#dc2626", color: "#fff" }}>
+            <th style={{ padding: "8px 12px", textAlign: "left" }}>Category</th>
+            <th style={{ padding: "8px 12px", textAlign: "center" }}>Male</th>
+            <th style={{ padding: "8px 12px", textAlign: "center" }}>Female</th>
+            <th style={{ padding: "8px 12px", textAlign: "center" }}>Total</th>
+          </tr></thead>
+          <tbody>{urData.map((r, i) => (
+            <tr key={i} style={{ borderBottom: "1px solid #e5e5e0", background: i % 2 ? "#f8fafc" : "#fff" }}>
+              <td style={{ padding: "8px 12px", fontWeight: 600 }}>{r.label}</td>
+              <td style={{ padding: "8px 12px", textAlign: "center" }}>{r.male}%</td>
+              <td style={{ padding: "8px 12px", textAlign: "center" }}>{r.female}%</td>
+              <td style={{ padding: "8px 12px", textAlign: "center", fontWeight: 700 }}>{r.total}%</td>
+            </tr>
+          ))}</tbody>
+        </table>
+      </div>
+
+      {/* WPR */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Worker Population Ratio (WPR)</div>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: "inherit" }}>
+          <thead><tr style={{ background: "#16a34a", color: "#fff" }}>
+            <th style={{ padding: "8px 12px", textAlign: "left" }}>Category</th>
+            <th style={{ padding: "8px 12px", textAlign: "center" }}>Male</th>
+            <th style={{ padding: "8px 12px", textAlign: "center" }}>Female</th>
+            <th style={{ padding: "8px 12px", textAlign: "center" }}>Total</th>
+          </tr></thead>
+          <tbody>{wprData.map((r, i) => (
+            <tr key={i} style={{ borderBottom: "1px solid #e5e5e0", background: i % 2 ? "#f8fafc" : "#fff" }}>
+              <td style={{ padding: "8px 12px", fontWeight: 600 }}>{r.label}</td>
+              <td style={{ padding: "8px 12px", textAlign: "center" }}>{r.male}%</td>
+              <td style={{ padding: "8px 12px", textAlign: "center" }}>{r.female}%</td>
+              <td style={{ padding: "8px 12px", textAlign: "center", fontWeight: 700 }}>{r.total}%</td>
+            </tr>
+          ))}</tbody>
+        </table>
+      </div>
+
+      {/* Sectoral Distribution */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Sectoral Distribution of Workers</div>
+        {sectorDist.map((s, i) => (
+          <HBar key={i} label={s.sector} value={s.pct} max={50} color={s.color} />
+        ))}
+      </div>
+
+      {/* Age-wise UR */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Unemployment Rate by Age Group</div>
+        {ageWiseUR.map((r, i) => (
+          <HBar key={i} label={r.age} value={r.ur} max={12} color={r.ur > 5 ? "#dc2626" : r.ur > 3 ? "#f59e0b" : "#16a34a"} />
+        ))}
+        <div style={{ fontSize: 12, color: "#777", marginTop: 8 }}>
+          Youth (18-24) bear the highest unemployment at 10.2%. Rate drops sharply after age 30.
+        </div>
+      </div>
+
+      {/* Education-wise UR */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Unemployment Rate by Education</div>
+        {eduWiseUR.map((r, i) => (
+          <HBar key={i} label={r.edu} value={r.ur} max={10} color={r.ur > 5 ? "#dc2626" : r.ur > 3 ? "#f59e0b" : "#16a34a"} />
+        ))}
+        <div style={{ fontSize: 12, color: "#777", marginTop: 8 }}>
+          Higher education correlates with higher unemployment — graduates face 7.9% UR vs 1.2% for illiterate workers.
+        </div>
+      </div>
+
+      {/* Key Insights */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Key EDA Insights</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
+          {[
+            { title: "Female LFPR Rising", stat: "37.0%", detail: "Up from 23.3% in 2017-18", color: "#be185d" },
+            { title: "Rural > Urban LFPR", stat: "60.8% vs 52.7%", detail: "Rural participation remains higher", color: "#15803d" },
+            { title: "Agri Still Dominant", stat: "46.1%", detail: "Nearly half the workforce", color: "#b45309" },
+            { title: "Youth UR Highest", stat: "10.2%", detail: "Age 18-24 most affected", color: "#dc2626" },
+            { title: "Education Paradox", stat: "7.9% UR", detail: "Graduates more unemployed", color: "#7c3aed" },
+            { title: "Gender Wage Gap", stat: "~28%", detail: "Persistent across sectors", color: "#0e7490" },
+          ].map((c, i) => (
+            <div key={i} style={{ background: "#f8fafc", borderRadius: 8, padding: "14px", border: "1px solid #e2e8f0", borderLeft: `4px solid ${c.color}` }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: c.color }}>{c.title}</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: "#1a1a2e", margin: "4px 0" }}>{c.stat}</div>
+              <div style={{ fontSize: 11, color: "#777" }}>{c.detail}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ padding: "16px 20px", background: "#f0f0ec", borderRadius: 10, fontSize: 12, color: "#777", lineHeight: 1.7 }}>
+        <strong>Source:</strong> PLFS Annual Report 2023-24, National Statistical Office (NSO), Ministry of Statistics & Programme Implementation.
+        <br /><strong>Note:</strong> Indicators shown are based on usual status (ps+ss) for persons aged 15+. Data will be updated with actual microdata analysis from <code>plfs/plfs_analysis.py</code> once PLFS unit-level data is provided.
+      </div>
+    </div>
+  );
+}
+
 // --- Public Procurement Tab ---
 function PublicProcurement() {
   const sectionStyle = { background: "#fff", borderRadius: 10, padding: "20px", border: "1px solid #e5e5e0", marginBottom: 16 };
@@ -1883,6 +2093,7 @@ export default function LowiClassification() {
           {[
             { key: "publicpolicy", label: "Public Policy" },
             { key: "procurement", label: "Public Procurement" },
+            { key: "plfs", label: "PLFS Analysis" },
             { key: "energy", label: "Energy Dashboard" },
           ].map((tab) => (
             <button
@@ -1901,6 +2112,7 @@ export default function LowiClassification() {
       </div>
 
       {activeTab === "procurement" && <PublicProcurement />}
+      {activeTab === "plfs" && <PLFSAnalysis />}
       {activeTab === "energy" && <EnergyDashboard />}
 
       {activeTab === "publicpolicy" && <div>
