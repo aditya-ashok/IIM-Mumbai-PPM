@@ -639,6 +639,50 @@ function PLFSAnalysis() {
         </div>
       </div>
 
+      {/* Avg Income by Gender */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 4 }}>Average Total Income by Gender</div>
+        <div style={{ fontSize: 12, color: "#777", marginBottom: 14 }}>Filter: tothrs_wrk &gt; 0 AND total_income &gt; 0 | 311,798 records</div>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: "inherit" }}>
+          <thead><tr style={{ background: "#1a1a2e", color: "#fff" }}>
+            <th style={{ padding: "8px 12px", textAlign: "left" }}>Gender</th>
+            <th style={{ padding: "8px 12px", textAlign: "right" }}>Mean Income</th>
+            <th style={{ padding: "8px 12px", textAlign: "right" }}>Median Income</th>
+            <th style={{ padding: "8px 12px", textAlign: "right" }}>Count</th>
+          </tr></thead>
+          <tbody>
+            <tr style={{ borderBottom: "1px solid #e5e5e0" }}>
+              <td style={{ padding: "8px 12px", fontWeight: 600, color: "#2563eb" }}>Male</td>
+              <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: 700 }}>Rs 21,058</td>
+              <td style={{ padding: "8px 12px", textAlign: "right" }}>Rs 15,500</td>
+              <td style={{ padding: "8px 12px", textAlign: "right" }}>2,32,082</td>
+            </tr>
+            <tr style={{ background: "#f8fafc" }}>
+              <td style={{ padding: "8px 12px", fontWeight: 600, color: "#be185d" }}>Female</td>
+              <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: 700 }}>Rs 11,445</td>
+              <td style={{ padding: "8px 12px", textAlign: "right" }}>Rs 6,500</td>
+              <td style={{ padding: "8px 12px", textAlign: "right" }}>79,716</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 14 }}>
+          <div style={{ background: "#fef2f2", borderRadius: 8, padding: "14px", border: "1px solid #fecaca", textAlign: "center" }}>
+            <div style={{ fontSize: 10, color: "#dc2626", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5 }}>Gender Gap (Mean)</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: "#dc2626" }}>45.7%</div>
+            <div style={{ fontSize: 11, color: "#777" }}>Women earn 45.7% less than men</div>
+          </div>
+          <div style={{ background: "#fef2f2", borderRadius: 8, padding: "14px", border: "1px solid #fecaca", textAlign: "center" }}>
+            <div style={{ fontSize: 10, color: "#dc2626", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5 }}>Gender Gap (Median)</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: "#dc2626" }}>58.1%</div>
+            <div style={{ fontSize: 11, color: "#777" }}>Even starker at median level</div>
+          </div>
+        </div>
+        <div style={{ marginTop: 12, display: "flex", height: 28, borderRadius: 6, overflow: "hidden", gap: 2 }}>
+          <div style={{ flex: 21058, background: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 10, fontWeight: 700 }}>Male Rs 21,058</div>
+          <div style={{ flex: 11445, background: "#be185d", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 10, fontWeight: 700 }}>Female Rs 11,445</div>
+        </div>
+      </div>
+
       {/* Gender Analysis */}
       <div style={sectionStyle}>
         <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Gender Analysis</div>
