@@ -332,6 +332,9 @@ function PLFSAnalysis() {
   const BASE = "https://raw.githubusercontent.com/aditya-ashok/IIM-Mumbai-PPM/public-policy/plfs/graphs_actual/";
 
   const graphs = [
+    { file: "20_scatter_hrs_income.png", title: "Scatter Plot: Work Hours vs Total Income", type: "Scatter Plot",
+      desc: "311,798 records where both tothrs_wrk > 0 and total_income > 0 (27.1% of total). Correlation = 0.189 (weak positive). Blue = Male, Pink = Female. More hours worked does NOT strongly predict higher income — structural factors matter more than hours.",
+      code: `mask = (df['tothrs_wrk'] > 0) & (df['total_income'] > 0)\nsubset = df[mask]  # 311,798 records\ncorr = subset['tothrs_wrk'].corr(subset['total_income'])  # 0.189\nax.scatter(sample['tothrs_wrk'], sample['total_income'], c=colors, alpha=0.3, s=10)` },
     { file: "18_age_quartile_variation.png", title: "Age Quartile Variation by Gender", type: "Box Plot + Stacked Bar",
       desc: "Left: Box plot showing age quartiles (Q1=16, Median=29, Q3=46) for Male vs Female with IQR=30. Right: Stacked bar showing quartile composition by gender. Male median is 28, Female median is 30.",
       code: `bp = ax.boxplot([data_m, data_f], tick_labels=['Male', 'Female'], patch_artist=True, showfliers=False)\n# Quartiles: Male Q1=15, Med=28, Q3=45 | Female Q1=16, Med=30, Q3=46\n\n# Stacked bar by quartile\nage_groups = pd.cut(df['age'], bins=[0,16,29,46,120], labels=['Q1','Q2','Q3','Q4'])\ncross = pd.crosstab(df['sex'], age_groups, normalize='index') * 100\ncross.plot(kind='barh', stacked=True)` },
