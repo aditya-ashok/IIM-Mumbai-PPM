@@ -332,6 +332,12 @@ function PLFSAnalysis() {
   const BASE = "https://raw.githubusercontent.com/aditya-ashok/IIM-Mumbai-PPM/public-policy/plfs/graphs_actual/";
 
   const graphs = [
+    { file: "18_age_quartile_variation.png", title: "Age Quartile Variation by Gender", type: "Box Plot + Stacked Bar",
+      desc: "Left: Box plot showing age quartiles (Q1=16, Median=29, Q3=46) for Male vs Female with IQR=30. Right: Stacked bar showing quartile composition by gender. Male median is 28, Female median is 30.",
+      code: `bp = ax.boxplot([data_m, data_f], tick_labels=['Male', 'Female'], patch_artist=True, showfliers=False)\n# Quartiles: Male Q1=15, Med=28, Q3=45 | Female Q1=16, Med=30, Q3=46\n\n# Stacked bar by quartile\nage_groups = pd.cut(df['age'], bins=[0,16,29,46,120], labels=['Q1','Q2','Q3','Q4'])\ncross = pd.crosstab(df['sex'], age_groups, normalize='index') * 100\ncross.plot(kind='barh', stacked=True)` },
+    { file: "19_income_outliers.png", title: "Total Income — Outlier Detection (IQR Method)", type: "Box Plot + Histogram",
+      desc: "Outlier analysis using IQR method: Q1=Rs 8,000, Q3=Rs 22,000, IQR=Rs 14,000. Upper fence at Rs 43,000. 24,368 outliers found (7.7% of earners). Outlier range: Rs 43,100 to Rs 7,10,000. Mean outlier income: Rs 66,855.",
+      code: `df['total_income'] = df['ern_reg'] + df['ern_self']\ninc = df[df['total_income'] > 0]['total_income']\nq1, q3 = inc.quantile(0.25), inc.quantile(0.75)\niqr = q3 - q1\nupper = q3 + 1.5 * iqr  # Rs 43,000\noutliers = inc[inc > upper]  # 24,368 records (7.7%)` },
     { file: "17_age_density_kde.png", title: "Age Distribution — Kernel Density Plot by Gender", type: "KDE Density Plot",
       desc: "Kernel Density Estimation (KDE) showing smoothed age distribution for Male, Female, and Overall. Reveals differences in age profiles — female distribution slightly younger. KDE is a non-parametric way to estimate the probability density function.",
       code: `for sex, label, color in [(1, 'Male', '#2563eb'), (2, 'Female', '#be185d')]:\n    df[df['sex'] == sex]['age'].plot.kde(ax=ax, color=color, lw=2.5, label=label)\ndf['age'].plot.kde(ax=ax, color='#1a1a2e', lw=2, ls='--', label='Overall')` },
@@ -475,6 +481,35 @@ function PLFSAnalysis() {
         </table>
         <div style={{ fontSize: 11, color: "#777", marginTop: 10, lineHeight: 1.5 }}>
           Positive skewness (0.42) indicates a slightly right-skewed distribution — more younger respondents. Platykurtic (kurtosis -0.61) means a flatter-than-normal distribution with lighter tails. Female median age (30) is slightly higher than male (28).
+        </div>
+      </div>
+
+      {/* Income Descriptive Stats */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Descriptive Statistics — Total Income (ern_reg + ern_self)</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 10, marginBottom: 16 }}>
+          {[
+            { label: "Earners", value: "315,418" },
+            { label: "Mean", value: "Rs 18,620" },
+            { label: "Median", value: "Rs 14,500" },
+            { label: "Std Dev", value: "Rs 17,840" },
+            { label: "Q1 (25%)", value: "Rs 8,000" },
+            { label: "Q3 (75%)", value: "Rs 22,000" },
+            { label: "IQR", value: "Rs 14,000" },
+            { label: "Upper Fence", value: "Rs 43,000" },
+            { label: "Outliers", value: "24,368 (7.7%)" },
+            { label: "Outlier Mean", value: "Rs 66,855" },
+            { label: "Max Income", value: "Rs 7,10,000" },
+            { label: "Skewness", value: "Right-skewed" },
+          ].map((s, i) => (
+            <div key={i} style={{ background: i === 8 ? "#fef2f2" : "#f8fafc", borderRadius: 8, padding: "10px 12px", textAlign: "center", border: `1px solid ${i === 8 ? "#fecaca" : "#e2e8f0"}` }}>
+              <div style={{ fontSize: 10, color: i === 8 ? "#dc2626" : "#999", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.label}</div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: "#1a1a2e", marginTop: 2 }}>{s.value}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 11, color: "#777", lineHeight: 1.5 }}>
+          Income is highly right-skewed — mean (Rs 18,620) is above median (Rs 14,500), indicating a long right tail. 7.7% of earners are outliers (income above Rs 43,000). IQR method: Outlier = value above Q3 + 1.5 x IQR.
         </div>
       </div>
 
