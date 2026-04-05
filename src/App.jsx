@@ -420,6 +420,64 @@ function PLFSAnalysis() {
         </div>
       </div>
 
+      {/* Age Descriptive Statistics */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Descriptive Statistics — Age</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 10, marginBottom: 16 }}>
+          {[
+            { label: "Count", value: "1,148,634" },
+            { label: "Mean", value: "31.8 yrs" },
+            { label: "Median", value: "29.0 yrs" },
+            { label: "Mode", value: "45 yrs" },
+            { label: "Std Dev", value: "19.9" },
+            { label: "Min", value: "0" },
+            { label: "Max", value: "117" },
+            { label: "Q1 (25%)", value: "16 yrs" },
+            { label: "Q3 (75%)", value: "46 yrs" },
+            { label: "IQR", value: "30 yrs" },
+            { label: "Skewness", value: "0.42 (right)" },
+            { label: "Kurtosis", value: "-0.61 (platy)" },
+          ].map((s, i) => (
+            <div key={i} style={{ background: "#f8fafc", borderRadius: 8, padding: "10px 12px", textAlign: "center", border: "1px solid #e2e8f0" }}>
+              <div style={{ fontSize: 10, color: "#999", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.label}</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: "#1a1a2e", marginTop: 2 }}>{s.value}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 8 }}>By Gender</div>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+          <thead><tr style={{ background: "#1a1a2e", color: "#fff" }}>
+            <th style={{ padding: "6px 10px", textAlign: "left" }}>Gender</th>
+            <th style={{ padding: "6px 10px", textAlign: "center" }}>Mean</th>
+            <th style={{ padding: "6px 10px", textAlign: "center" }}>Median</th>
+            <th style={{ padding: "6px 10px", textAlign: "center" }}>Std Dev</th>
+            <th style={{ padding: "6px 10px", textAlign: "center" }}>Min</th>
+            <th style={{ padding: "6px 10px", textAlign: "center" }}>Max</th>
+          </tr></thead>
+          <tbody>
+            <tr style={{ borderBottom: "1px solid #e5e5e0" }}>
+              <td style={{ padding: "6px 10px", fontWeight: 600, color: "#2563eb" }}>Male</td>
+              <td style={{ padding: "6px 10px", textAlign: "center" }}>31.3</td>
+              <td style={{ padding: "6px 10px", textAlign: "center" }}>28</td>
+              <td style={{ padding: "6px 10px", textAlign: "center" }}>19.9</td>
+              <td style={{ padding: "6px 10px", textAlign: "center" }}>0</td>
+              <td style={{ padding: "6px 10px", textAlign: "center" }}>110</td>
+            </tr>
+            <tr style={{ background: "#f8fafc" }}>
+              <td style={{ padding: "6px 10px", fontWeight: 600, color: "#be185d" }}>Female</td>
+              <td style={{ padding: "6px 10px", textAlign: "center" }}>32.2</td>
+              <td style={{ padding: "6px 10px", textAlign: "center" }}>30</td>
+              <td style={{ padding: "6px 10px", textAlign: "center" }}>19.8</td>
+              <td style={{ padding: "6px 10px", textAlign: "center" }}>0</td>
+              <td style={{ padding: "6px 10px", textAlign: "center" }}>117</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style={{ fontSize: 11, color: "#777", marginTop: 10, lineHeight: 1.5 }}>
+          Positive skewness (0.42) indicates a slightly right-skewed distribution — more younger respondents. Platykurtic (kurtosis -0.61) means a flatter-than-normal distribution with lighter tails. Female median age (30) is slightly higher than male (28).
+        </div>
+      </div>
+
       {/* Gender Analysis */}
       <div style={sectionStyle}>
         <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Gender Analysis</div>
