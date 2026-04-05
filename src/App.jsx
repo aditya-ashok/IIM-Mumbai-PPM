@@ -2023,8 +2023,17 @@ function EnergyDashboard() {
 }
 
 export default function LowiClassification() {
-  const [activeTab, setActiveTab] = useState("publicpolicy");
+  const getInitialTab = () => {
+    const hash = window.location.hash.replace("#", "");
+    if (["publicpolicy", "procurement", "plfs"].includes(hash)) return hash;
+    return "publicpolicy";
+  };
+  const [activeTab, setActiveTab] = useState(getInitialTab);
   const [subTab, setSubTab] = useState("classify");
+
+  useEffect(() => {
+    window.location.hash = activeTab;
+  }, [activeTab]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeSector, setActiveSector] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
