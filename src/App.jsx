@@ -513,6 +513,60 @@ function PLFSAnalysis() {
         </div>
       </div>
 
+      {/* SAS Frequency Distribution */}
+      <div style={sectionStyle}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Frequency Distribution — Status of Activity (sas)</div>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: "inherit" }}>
+            <thead><tr style={{ background: "#1a1a2e", color: "#fff" }}>
+              <th style={{ padding: "8px 10px", textAlign: "left" }}>Code</th>
+              <th style={{ padding: "8px 10px", textAlign: "left" }}>Category</th>
+              <th style={{ padding: "8px 10px", textAlign: "right" }}>Count</th>
+              <th style={{ padding: "8px 10px", textAlign: "right" }}>%</th>
+              <th style={{ padding: "8px 10px", textAlign: "right" }}>Cum %</th>
+            </tr></thead>
+            <tbody>
+              {[
+                { code: "11", cat: "Self-employed (own account)", count: "37,876", pct: "3.3%", cum: "3.3%", color: "#2563eb" },
+                { code: "12", cat: "Self-employed (employer)", count: "2,312", pct: "0.2%", cum: "3.5%", color: "#3b82f6" },
+                { code: "21", cat: "Helper in HH enterprise", count: "43,165", pct: "3.8%", cum: "7.3%", color: "#be185d" },
+                { code: "31", cat: "Regular wage/salaried", count: "3,038", pct: "0.3%", cum: "7.5%", color: "#16a34a" },
+                { code: "41", cat: "Casual labour (public works)", count: "9,117", pct: "0.8%", cum: "8.3%", color: "#f59e0b" },
+                { code: "51", cat: "Casual labour (other)", count: "21,045", pct: "1.8%", cum: "10.1%", color: "#ea580c" },
+                { code: "NaN", cat: "Missing / Not in labour force", count: "1,032,044", pct: "89.9%", cum: "100.0%", color: "#dc2626" },
+              ].map((r, i) => (
+                <tr key={i} style={{ borderBottom: "1px solid #e5e5e0", background: r.code === "NaN" ? "#fef2f2" : i % 2 ? "#f8fafc" : "#fff" }}>
+                  <td style={{ padding: "6px 10px", fontFamily: "monospace", fontWeight: 700, color: r.color }}>{r.code}</td>
+                  <td style={{ padding: "6px 10px", fontWeight: r.code === "NaN" ? 700 : 400 }}>{r.cat}</td>
+                  <td style={{ padding: "6px 10px", textAlign: "right", fontWeight: 600 }}>{r.count}</td>
+                  <td style={{ padding: "6px 10px", textAlign: "right" }}>{r.pct}</td>
+                  <td style={{ padding: "6px 10px", textAlign: "right" }}>{r.cum}</td>
+                </tr>
+              ))}
+              <tr style={{ background: "#1a1a2e", color: "#fff", fontWeight: 700 }}>
+                <td style={{ padding: "6px 10px" }}></td>
+                <td style={{ padding: "6px 10px" }}>Total</td>
+                <td style={{ padding: "6px 10px", textAlign: "right" }}>1,148,597</td>
+                <td style={{ padding: "6px 10px", textAlign: "right" }}>100.0%</td>
+                <td style={{ padding: "6px 10px", textAlign: "right" }}></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style={{ marginTop: 14 }}>
+          <div style={{ display: "flex", height: 28, borderRadius: 6, overflow: "hidden", gap: 2, marginBottom: 8 }}>
+            <div style={{ flex: 3.3, background: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 8, fontWeight: 700 }}>OA</div>
+            <div style={{ flex: 3.8, background: "#be185d", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 8, fontWeight: 700 }}>HH</div>
+            <div style={{ flex: 0.8, background: "#f59e0b" }}></div>
+            <div style={{ flex: 1.8, background: "#ea580c", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 8, fontWeight: 700 }}>CL</div>
+            <div style={{ flex: 89.9, background: "#e5e5e0", display: "flex", alignItems: "center", justifyContent: "center", color: "#999", fontSize: 10, fontWeight: 700 }}>Missing / Not in LF (89.9%)</div>
+          </div>
+        </div>
+        <div style={{ fontSize: 11, color: "#777", lineHeight: 1.5, marginTop: 8 }}>
+          89.9% of records have missing SAS — these are persons not in the labour force (children, students, homemakers, elderly). Among those with activity status, <strong>Helper in HH enterprise (3.8%)</strong> and <strong>Self-employed own account (3.3%)</strong> are the largest categories. Regular wage/salaried is only 0.3% of total population.
+        </div>
+      </div>
+
       {/* Gender Analysis */}
       <div style={sectionStyle}>
         <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Gender Analysis</div>
